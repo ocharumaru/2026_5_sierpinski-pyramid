@@ -17,13 +17,19 @@ npm run dev
 ```
 src/
 ├── main.jsx                    # エントリーポイント
-├── App.jsx                     # 表示するフラクタルを選ぶだけ
+├── App.jsx                     # ルーティング（URLパスで図形を切り替え）
 ├── App.css
 ├── index.css
+├── components/
+│   ├── FractalScene.jsx        # 共通3Dシーン（Canvas + ライティング + カメラ操作）
+│   └── ControlPanel.jsx        # 共通UIパネル（アニメーション制御 + ワイヤーフレーム）
 ├── hooks/
-│   └── useCreateGeometry.js    # 共通ユーティリティフック
+│   ├── useCreateGeometry.js    # ジオメトリ生成フック
+│   └── useFractalAnimation.js  # ステップアニメーション制御フック
 └── fractals/
-    └── SierpinskiPyramid.jsx   # シェルピンスキー四面体
+    ├── index.js                # フラクタルのレジストリ（図形の登録）
+    ├── SierpinskiPyramid.jsx   # シェルピンスキー四面体
+    └── MengerSponge.jsx        # メンガースポンジ
 ```
 
 ## アーキテクチャ
@@ -73,13 +79,20 @@ function MyLine({ depth }) {
 
 図形によってどちらも合わない場合（例: シェーダーベースのマンデルバルブなど）は、独自にジオメトリを生成しても構わない。
 
+### 共通コンポーネント（`src/components/`）
+
+| コンポーネント | 役割 |
+|---|---|
+| `FractalScene` | Canvas + ライティング + OrbitControls のラッパー。children に Mesh を渡す |
+| `ControlPanel` | UIパネル（パラメータ入力 + アニメーション制御 + ワイヤーフレーム）。render prop で currentDepth と wireframe を渡す |
+
 ### 各フラクタルファイルの責務
 
-各 `src/fractals/XxxFractal.jsx` は以下をすべて含む自己完結したモジュール:
+各 `src/fractals/XxxFractal.jsx` が持つのは **図形固有のロジックだけ**:
 
 1. **生成ロジック** — 頂点座標を計算する純粋関数
 2. **Mesh コンポーネント** — ジオメトリにマテリアルを当てて描画
-3. **シーン全体（デフォルトエクスポート）** — Canvas、ライト、カメラ操作、UIを含む完全なコンポーネント
+3. **デフォルトエクスポート** — ControlPanel と FractalScene を組み合わせる
 
 各関数にはJSDoc形式のコメントを記述すること。
 
@@ -87,46 +100,63 @@ function MyLine({ depth }) {
 // src/fractals/SierpinskiPyramid.jsx の構造例
 
 /** 頂点座標を生成する純粋関数 */
-function generateVertices(depth) { ... }          // 1. 生成ロジック
+function generateVertices(depth) { ... }
 
 /** ジオメトリにマテリアルを当てて描画 */
-function SierpinskiMesh({ depth }) { ... }        // 2. Mesh
+function SierpinskiMesh({ depth, wireframe }) { ... }
 
-/** Canvas + UI を含む完全なシーン */
-export default function SierpinskiPyramid() { ... } // 3. シーン全体
+/** 共通コンポーネントを組み合わせるだけ */
+export default function SierpinskiPyramid() {
+  return (
+    <ControlPanel maxDepth={8} defaultDepth={6} defaultInterval={450}>
+      {({ currentDepth, wireframe }) => (
+        <FractalScene>
+          <SierpinskiMesh depth={currentDepth} wireframe={wireframe} />
+        </FractalScene>
+      )}
+    </ControlPanel>
+  );
+}
 ```
 
-### App.jsx
+### ルーティング（`src/App.jsx`）
 
-使いたいフラクタルをインポートして返すだけ。
+URLパスで表示する図形を切り替える。react-router-dom を使用。
 
-```jsx
-import SierpinskiPyramid from './fractals/SierpinskiPyramid'
+| URL | 表示内容 |
+|---|---|
+| `/` | トップページ（図形一覧のリンク） |
+| `/sierpinski` | シェルピンスキー四面体 |
+| `/menger` | メンガースポンジ |
 
-export default function App() {
-  return <SierpinskiPyramid />
-}
+### フラクタルレジストリ（`src/fractals/index.js`）
+
+全図形の登録先。App.jsx はここを参照してルーティングを自動生成する。
+
+```js
+export const fractals = [
+  {
+    path: "sierpinski",
+    name: "シェルピンスキー四面体",
+    component: lazy(() => import('./SierpinskiPyramid')),
+  },
+  // 新しい図形はここに追加するだけ
+]
 ```
 
 ## 新しいフラクタル図形の追加手順
 
 1. `src/fractals/NewFractal.jsx` を作成
 2. 上記の3層構造（生成ロジック・Mesh・シーン）で実装し、各関数にJSDocを記述
-3. `App.jsx` でインポートして使う
+3. `src/fractals/index.js` にエントリを追加
 
-```jsx
-// src/fractals/MengerSponge.jsx
-import { useCreateGeometry } from '../hooks/useCreateGeometry'
-
-/** @param {number} depth - 再帰の深さ */
-function generateVertices(depth) { /* ... */ }
-
-function MengerMesh({ depth }) {
-  const geometry = useCreateGeometry(generateVertices, depth)
-  return <mesh geometry={geometry}>...</mesh>
-}
-
-export default function MengerSponge() {
-  // Canvas + UI + MengerMesh を自由に構成
-}
+```js
+// src/fractals/index.js に追加
+{
+  path: "koch",
+  name: "コッホ雪片",
+  component: lazy(() => import('./KochSnowflake')),
+},
 ```
+
+`App.jsx` の変更は不要。ルーティングとトップページのリンクは自動で追加される。
