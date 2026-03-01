@@ -28,26 +28,50 @@ src/
 
 ## アーキテクチャ
 
-### 共通フック: `useCreateGeometry(generateVertices, depth)`
+### 共通フック（`src/hooks/useCreateGeometry.js`）
 
-`src/hooks/useCreateGeometry.js` に定義。
-頂点配列を生成する関数と再帰の深さを受け取り、Three.js の `BufferGeometry` を返す。
+`depth` と頂点生成関数を受け取り、Three.js の `BufferGeometry` を返す。描画方式に応じて2種類。
+
+| フック | 用途 | 描画方式 | 使用例 |
+|---|---|---|---|
+| `useCreateGeometry` | ポリゴンメッシュ | 三角形の面 | シェルピンスキー四面体、メンガースポンジ |
+| `useCreateLineGeometry` | ライン | 連続した線分 | コッホ雪片、ドラゴン曲線 |
 
 ```js
+// ポリゴンメッシュの場合
 import { useCreateGeometry } from '../hooks/useCreateGeometry'
 
 function generateVertices(depth) {
-  // depth に応じてフラットな頂点座標配列 [x,y,z, x,y,z, ...] を返す
+  // 3頂点ごとに1つの三角形: [x,y,z, x,y,z, x,y,z, ...]
   return positions
 }
 
-function MyFractalMesh({ depth }) {
+function MyMesh({ depth }) {
   const geometry = useCreateGeometry(generateVertices, depth)
   return <mesh geometry={geometry}>...</mesh>
 }
 ```
 
-図形によって `useCreateGeometry` が合わない場合（例: シェーダーベースのマンデルバルブなど）は、独自にジオメトリを生成しても構わない。
+```js
+// ライン描画の場合
+import { useCreateLineGeometry } from '../hooks/useCreateGeometry'
+
+function generatePoints(depth) {
+  // 隣接する頂点が線分で結ばれる: [x,y,z, x,y,z, ...]
+  return points
+}
+
+function MyLine({ depth }) {
+  const geometry = useCreateLineGeometry(generatePoints, depth)
+  return (
+    <line geometry={geometry}>
+      <lineBasicMaterial color="white" />
+    </line>
+  )
+}
+```
+
+図形によってどちらも合わない場合（例: シェーダーベースのマンデルバルブなど）は、独自にジオメトリを生成しても構わない。
 
 ### 各フラクタルファイルの責務
 
