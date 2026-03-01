@@ -3,6 +3,11 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { useState } from "react";
 import { useCreateGeometry } from "../hooks/useCreateGeometry";
+import { useFractalAnimation } from "../hooks/useFractalAnimation";
+
+/* =========================
+   シェルピンスキー生成ロジック
+   ========================= */
 
 /**
  * 原点中心の正四面体の4頂点を生成する。
@@ -91,13 +96,17 @@ function generateVertices(depth) {
   return positions;
 }
 
+/* =========================
+   コンポーネント
+   ========================= */
+
 /**
  * シェルピンスキー四面体のメッシュコンポーネント。
- * useCreateGeometry を使用してジオメトリを生成し、水色のマテリアルで描画する。
+ * useCreateGeometry を使用してジオメトリを生成し描画する。
  *
- * @param {{ depth: number }} props
+ * @param {{ depth: number, wireframe: boolean }} props
  */
-function SierpinskiMesh({ depth }) {
+function SierpinskiMesh({ depth, wireframe }) {
   const geometry = useCreateGeometry(generateVertices, depth);
   return (
     <mesh geometry={geometry}>
@@ -106,51 +115,178 @@ function SierpinskiMesh({ depth }) {
         roughness={0.35}
         metalness={0.1}
         side={THREE.DoubleSide}
+        wireframe={wireframe}
       />
     </mesh>
   );
 }
 
+/* =========================
+   UIスタイル
+   ========================= */
+
+const panelStyle = {
+  position: "absolute",
+  top: 20,
+  left: 20,
+  padding: "16px 20px",
+  background: "rgba(0,0,0,0.75)",
+  color: "white",
+  borderRadius: 10,
+  zIndex: 10,
+  fontFamily: "sans-serif",
+  fontSize: 14,
+  minWidth: 280,
+};
+
+const headerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 12,
+  paddingBottom: 8,
+  borderBottom: "1px solid rgba(255,255,255,0.2)",
+};
+
+const rowStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 8,
+};
+
+const inputStyle = {
+  width: 80,
+  padding: "4px 8px",
+  background: "rgba(255,255,255,0.1)",
+  border: "1px solid rgba(255,255,255,0.3)",
+  borderRadius: 4,
+  color: "white",
+  fontSize: 14,
+  textAlign: "right",
+};
+
+const buttonBase = {
+  padding: "8px 16px",
+  border: "none",
+  borderRadius: 6,
+  fontSize: 14,
+  fontWeight: "bold",
+  cursor: "pointer",
+};
+
 /**
  * シェルピンスキー四面体の完全なシーン。
- * Canvas、ライティング、カメラ操作、depthスライダーUIを含む。
+ * Canvas、ライティング、カメラ操作、パラメータUI、ステップアニメーションを含む。
  */
 export default function SierpinskiPyramid() {
-  const [depth, setDepth] = useState(3);
+  const [targetDepth, setTargetDepth] = useState(6);
+  const [stepInterval, setStepInterval] = useState(450);
+  const [wireframe, setWireframe] = useState(false);
+
+  const {
+    currentDepth,
+    isPlaying,
+    isFinished,
+    start,
+    pause,
+    resume,
+    reset,
+  } = useFractalAnimation(targetDepth, stepInterval);
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          padding: "10px 14px",
-          background: "rgba(0,0,0,0.6)",
-          color: "white",
-          borderRadius: 8,
-          zIndex: 10,
-          fontFamily: "sans-serif",
-        }}
-      >
-        <div style={{ marginBottom: 6 }}>
-          depth : <strong>{depth}</strong>
+      {/* UIパネル */}
+      <div style={panelStyle}>
+        {/* ヘッダー */}
+        <div style={headerStyle}>
+          <strong>フラクタル生成</strong>
+          <span style={{ opacity: 0.7 }}>
+            ステップ {currentDepth} / {targetDepth}
+            {isPlaying ? " ▶" : isFinished ? " ■" : " ⏸"}
+          </span>
         </div>
-        <input
-          type="range"
-          min={0}
-          max={6}
-          step={1}
-          value={depth}
-          onChange={(e) => setDepth(Number(e.target.value))}
-        />
+
+        {/* パラメータ入力 */}
+        <div style={rowStyle}>
+          <span>目標深さ（depth）</span>
+          <input
+            type="number"
+            min={0}
+            max={8}
+            value={targetDepth}
+            onChange={(e) => setTargetDepth(Math.max(0, Math.min(8, Number(e.target.value))))}
+            style={inputStyle}
+            disabled={isPlaying}
+          />
+        </div>
+        <div style={{ ...rowStyle, marginBottom: 16 }}>
+          <span>ステップ間隔（ms）</span>
+          <input
+            type="number"
+            min={100}
+            max={5000}
+            step={50}
+            value={stepInterval}
+            onChange={(e) => setStepInterval(Math.max(100, Number(e.target.value)))}
+            style={inputStyle}
+            disabled={isPlaying}
+          />
+        </div>
+
+        {/* 操作ボタン */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+          <button
+            onClick={start}
+            disabled={isPlaying}
+            style={{
+              ...buttonBase,
+              background: isPlaying ? "#555" : "#2dd4a8",
+              color: isPlaying ? "#999" : "#000",
+            }}
+          >
+            生成スタート
+          </button>
+          <button
+            onClick={isPlaying ? pause : resume}
+            disabled={isFinished && !isPlaying}
+            style={{
+              ...buttonBase,
+              background: isFinished && !isPlaying ? "#555" : "#f0c040",
+              color: isFinished && !isPlaying ? "#999" : "#000",
+            }}
+          >
+            {isPlaying ? "一時停止" : "再開"}
+          </button>
+          <button
+            onClick={reset}
+            style={{
+              ...buttonBase,
+              background: "#f06080",
+              color: "#fff",
+            }}
+          >
+            リセット
+          </button>
+        </div>
+
+        {/* オプション */}
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={wireframe}
+            onChange={(e) => setWireframe(e.target.checked)}
+          />
+          ワイヤーフレーム
+        </label>
       </div>
 
+      {/* 3D Canvas */}
       <div style={{ width: "100vw", height: "100vh" }}>
         <Canvas camera={{ position: [3, 3, 3], fov: 50 }}>
           <ambientLight intensity={0.6} />
           <directionalLight position={[5, 5, 5]} intensity={1} />
-          <SierpinskiMesh depth={depth} />
+          <SierpinskiMesh depth={currentDepth} wireframe={wireframe} />
           <OrbitControls enableDamping />
         </Canvas>
       </div>
