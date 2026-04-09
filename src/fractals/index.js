@@ -1,22 +1,23 @@
 import { lazy } from 'react'
+import { fractalCatalog } from '../models/fractalCatalog'
 
 /**
  * フラクタル図形のレジストリ。
- * 新しい図形を追加するときはここに1エントリ追加するだけ。
+ * 描画コンポーネントのみを扱う。
  *
  * @property {string} path - URLパス（例: "/sierpinski"）
  * @property {string} name - 表示名
  * @property {React.LazyExoticComponent} component - lazy import されたコンポーネント
  */
-export const fractals = [
-  {
-    path: "sierpinski",
-    name: "シェルピンスキー四面体",
-    component: lazy(() => import('./SierpinskiPyramid')),
-  },
-  {
-    path: "menger",
-    name: "メンガースポンジ",
-    component: lazy(() => import('./MengerSponge')),
-  },
-]
+const componentsByPath = {
+  sierpinski: lazy(() => import('./SierpinskiPyramid')),
+  menger: lazy(() => import('./MengerSponge')),
+}
+
+export const fractals = fractalCatalog
+  .map(({ path, name }) => ({
+    path,
+    name,
+    component: componentsByPath[path],
+  }))
+  .filter((fractal) => fractal.component)
