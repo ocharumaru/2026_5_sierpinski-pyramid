@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useFractalAnimation } from "../hooks/useFractalAnimation";
 
 /* =========================
@@ -169,6 +170,21 @@ export default function ControlPanel({
           />
           ワイヤーフレーム
         </label>
+
+        <div style={{ marginTop: 12 }}>
+          <Link
+            to="/models"
+            style={{
+              ...buttonBase,
+              display: "inline-block",
+              textDecoration: "none",
+              background: "#5f8df7",
+              color: "#fff",
+            }}
+          >
+            図形選択に戻る
+          </Link>
+        </div>
       </div>
 
       {/* render prop でMeshを描画 */}
