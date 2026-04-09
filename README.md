@@ -14,10 +14,10 @@ npm run dev
 
 ## ファイル構成
 
-```
+```text
 src/
 ├── main.jsx                    # エントリーポイント
-├── App.jsx                     # ルーティング（URLパスで図形を切り替え）
+├── App.jsx                     # ルーティング定義
 ├── App.css
 ├── index.css
 ├── components/
@@ -26,10 +26,18 @@ src/
 ├── hooks/
 │   ├── useCreateGeometry.js    # ジオメトリ生成フック
 │   └── useFractalAnimation.js  # ステップアニメーション制御フック
-└── fractals/
-    ├── index.js                # フラクタルのレジストリ（図形の登録）
-    ├── SierpinskiPyramid.jsx   # シェルピンスキー四面体
-    └── MengerSponge.jsx        # メンガースポンジ
+├── fractals/
+│   ├── index.js                # フラクタル描画レジストリ
+│   ├── SierpinskiPyramid.jsx   # シェルピンスキー四面体
+│   └── MengerSponge.jsx        # メンガースポンジ
+├── models/
+│   └── fractalCatalog.js       # モデル説明データ（初心者向け / 上級者向け）
+├── pages/
+│   ├── FrontPage.jsx           # フロントページ
+│   ├── ModelSelectionPage.jsx  # モデル選択ページ
+│   └── ModelIntroPage.jsx      # モデル専用ページ（初心者向け / 上級者向け）
+└── styles/
+    └── pageStyles.js           # ページ共通スタイル
 ```
 
 ## アーキテクチャ
@@ -88,75 +96,77 @@ function MyLine({ depth }) {
 
 ### 各フラクタルファイルの責務
 
-各 `src/fractals/XxxFractal.jsx` が持つのは **図形固有のロジックだけ**:
+各 `src/fractals/XxxFractal.jsx` が持つのは図形固有のロジックだけ。
 
-1. **生成ロジック** — 頂点座標を計算する純粋関数
-2. **Mesh コンポーネント** — ジオメトリにマテリアルを当てて描画
-3. **デフォルトエクスポート** — ControlPanel と FractalScene を組み合わせる
+1. 生成ロジック（頂点座標を計算する純粋関数）
+2. Mesh コンポーネント（ジオメトリにマテリアルを当てて描画）
+3. デフォルトエクスポート（ControlPanel と FractalScene を組み合わせる）
 
-各関数にはJSDoc形式のコメントを記述すること。
+各関数には JSDoc 形式のコメントを記述すること。
 
-```jsx
-// src/fractals/SierpinskiPyramid.jsx の構造例
+### ルーティング方式（`src/App.jsx`）
 
-/** 頂点座標を生成する純粋関数 */
-function generateVertices(depth) { ... }
-
-/** ジオメトリにマテリアルを当てて描画 */
-function SierpinskiMesh({ depth, wireframe }) { ... }
-
-/** 共通コンポーネントを組み合わせるだけ */
-export default function SierpinskiPyramid() {
-  return (
-    <ControlPanel maxDepth={8} defaultDepth={6} defaultInterval={450}>
-      {({ currentDepth, wireframe }) => (
-        <FractalScene>
-          <SierpinskiMesh depth={currentDepth} wireframe={wireframe} />
-        </FractalScene>
-      )}
-    </ControlPanel>
-  );
-}
-```
-
-### ルーティング（`src/App.jsx`）
-
-URLパスで表示する図形を切り替える。react-router-dom を使用。
+現在は react-router-dom によるクライアントサイドルーティング。
+`BrowserRouter` + `Routes` + `Route` を使い、`Link` と `useNavigate` で画面遷移している。
 
 | URL | 表示内容 |
 |---|---|
-| `/` | トップページ（図形一覧のリンク） |
+| `/` | フロントページ |
+| `/models` | モデル選択ページ |
+| `/models/:modelId` | モデル専用ページ（初心者向け / 上級者向け） |
 | `/sierpinski` | シェルピンスキー四面体 |
 | `/menger` | メンガースポンジ |
 
+3D描画ページ（`/sierpinski`, `/menger`）は `React.lazy` + `Suspense` で遅延読み込みしている。
+
 ### フラクタルレジストリ（`src/fractals/index.js`）
 
-全図形の登録先。App.jsx はここを参照してルーティングを自動生成する。
+描画コンポーネントの対応表。モデル説明データは `src/models/fractalCatalog.js` に分離している。
 
 ```js
-export const fractals = [
-  {
-    path: "sierpinski",
-    name: "シェルピンスキー四面体",
-    component: lazy(() => import('./SierpinskiPyramid')),
-  },
-  // 新しい図形はここに追加するだけ
-]
+const componentsByPath = {
+  sierpinski: lazy(() => import('./SierpinskiPyramid')),
+  menger: lazy(() => import('./MengerSponge')),
+}
+
+export const fractals = fractalCatalog
+  .map(({ path, name }) => ({ path, name, component: componentsByPath[path] }))
+  .filter((fractal) => fractal.component)
 ```
+
+### チャンク分割（`vite.config.js`）
+
+ビルド時のチャンクサイズ警告を抑えるために `manualChunks` を設定している。
+
+- `three-vendor`: `three`, `@react-three/fiber`, `@react-three/drei`
+- `router-vendor`: `react-router-dom`, `react-router`
+- `react-vendor`: `react`, `react-dom`
+
+トップ導線の画面と 3D 描画関連ライブラリの読み込みを分離し、キャッシュ効率と初期表示の体感改善を狙う構成。
+ただし Three.js 系はライブラリ自体が大きいため、`three-vendor` が 500kB 警告を超えることがある。
 
 ## 新しいフラクタル図形の追加手順
 
 1. `src/fractals/NewFractal.jsx` を作成
-2. 上記の3層構造（生成ロジック・Mesh・シーン）で実装し、各関数にJSDocを記述
-3. `src/fractals/index.js` にエントリを追加
+2. 生成ロジック・Mesh・シーンの3層構造で実装し、各関数に JSDoc を記述
+3. `src/models/fractalCatalog.js` に `path`, `name`, `intro` を追加
+4. `src/fractals/index.js` の `componentsByPath` に lazy import を追加
 
 ```js
-// src/fractals/index.js に追加
+// src/models/fractalCatalog.js に追加
 {
-  path: "koch",
-  name: "コッホ雪片",
-  component: lazy(() => import('./KochSnowflake')),
-},
+  path: 'koch',
+  name: 'コッホ雪片',
+  intro: {
+    beginner: { overview: '...', feature: '...', application: '...', howTo: '...' },
+    advanced: { overview: '...', feature: '...', application: '...', howTo: '...' },
+  },
+}
 ```
 
-`App.jsx` の変更は不要。ルーティングとトップページのリンクは自動で追加される。
+```js
+// src/fractals/index.js の componentsByPath に追加
+koch: lazy(() => import('./KochSnowflake')),
+```
+
+`App.jsx` の変更は不要。ルーティングとページ遷移は自動で反映される。
