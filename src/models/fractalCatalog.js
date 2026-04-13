@@ -39,6 +39,24 @@ export const fractalCatalog = [
       },
     },
   },
+  {
+    path: 'mandelbulb',
+    name: 'マンデルバルブ',
+    intro: {
+      beginner: {
+        overview: 'マンデルブロ集合の考え方を3次元へ拡張した代表的な立体フラクタル。',
+        feature: '自己相似の突起が球状に広がり、角度を変えると複雑な形が現れます。',
+        application: 'レイマーチングや距離推定法の入門教材として活用できます。',
+        howTo: 'まずdepthを10-14程度にして、指数とbailoutを動かして形の差を観察します。',
+      },
+      advanced: {
+        overview: '距離推定関数を用いたレイマーチングで描画する暗黙曲面フラクタル。',
+        feature: '指数power、bailout、反復上限で形状ディテールと計算負荷が変化します。',
+        application: 'GPUシェーダー最適化、法線推定、ステップ制御の検証対象に適しています。',
+        howTo: 'depthを上げつつfps低下点を計測し、パラメータごとの負荷特性を比較します。',
+      },
+    },
+  },
 ]
 
 /**

@@ -29,7 +29,9 @@ src/
 ├── fractals/
 │   ├── index.js                # フラクタル描画レジストリ
 │   ├── SierpinskiPyramid.jsx   # シェルピンスキー四面体
-│   └── MengerSponge.jsx        # メンガースポンジ
+│   ├── MengerSponge.jsx        # メンガースポンジ
+│   ├── Mandelbulb.jsx          # マンデルバルブ（レイマーチング）
+│   └── mandelbulbShader.js     # マンデルバルブ用シェーダー
 ├── models/
 │   └── fractalCatalog.js       # モデル説明データ（初心者向け / 上級者向け）
 ├── pages/
@@ -116,8 +118,9 @@ function MyLine({ depth }) {
 | `/models/:modelId` | モデル専用ページ（初心者向け / 上級者向け） |
 | `/sierpinski` | シェルピンスキー四面体 |
 | `/menger` | メンガースポンジ |
+| `/mandelbulb` | マンデルバルブ |
 
-3D描画ページ（`/sierpinski`, `/menger`）は `React.lazy` + `Suspense` で遅延読み込みしている。
+3D描画ページ（`/sierpinski`, `/menger`, `/mandelbulb`）は `React.lazy` + `Suspense` で遅延読み込みしている。
 
 ### フラクタルレジストリ（`src/fractals/index.js`）
 

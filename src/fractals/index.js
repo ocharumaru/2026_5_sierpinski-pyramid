@@ -12,6 +12,7 @@ import { fractalCatalog } from '../models/fractalCatalog'
 const componentsByPath = {
   sierpinski: lazy(() => import('./SierpinskiPyramid')),
   menger: lazy(() => import('./MengerSponge')),
+  mandelbulb: lazy(() => import('./Mandelbulb')),
 }
 
 export const fractals = fractalCatalog
