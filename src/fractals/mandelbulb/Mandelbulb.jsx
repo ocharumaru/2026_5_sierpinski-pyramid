@@ -1,7 +1,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
-import ControlPanel from "../components/ControlPanel";
+import ControlPanel from "../../components/ControlPanel";
 import { vertexShader, fragmentShader } from "./mandelbulbShader";
 
 const extraPanelStyle = {
