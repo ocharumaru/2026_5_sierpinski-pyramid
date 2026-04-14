@@ -188,6 +188,12 @@ export const pageStyles = {
     background: color.bgPanelHover,
   },
 
+  /** カード選択状態（ModelSelectionPage でタップ後） */
+  cardSelected: {
+    border: `2px solid ${color.purple}`,
+    background: color.purpleDim,
+  },
+
   cardTitle: {
     fontSize: 15,
     fontWeight: 500,
