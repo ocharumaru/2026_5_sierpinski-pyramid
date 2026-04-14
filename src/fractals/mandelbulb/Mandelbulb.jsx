@@ -126,9 +126,13 @@ function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
     };
 
     const onUp = (e) => {
+      // pointerleave / pointercancel などで誤って再生成しないように、
+      // 実際にポインターダウンした操作のみを終了処理の対象にする。
+      if (!isDownRef.current) return;
+
       isDownRef.current = false;
 
-      if (!movedRef.current && dragModeRef.current === "rotate") {
+      if (e.type === "pointerup" && e.button === 0 && !movedRef.current && dragModeRef.current === "rotate") {
         growStartRef.current = matRef.current?.uniforms?.uTime?.value ?? 0;
       }
 
