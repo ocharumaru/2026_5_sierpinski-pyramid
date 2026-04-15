@@ -11,7 +11,6 @@ precision highp float;
 
 varying vec2 vUv;
 
-uniform float uTime;
 uniform vec2 uResolution;
 
 uniform vec2 uRot;

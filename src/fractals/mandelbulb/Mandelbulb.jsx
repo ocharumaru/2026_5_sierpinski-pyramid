@@ -30,6 +30,7 @@ const sliderStyle = {
  */
 function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
   const matRef = useRef(null);
+  const elapsedRef = useRef(0);
 
   const rotRef = useRef(new THREE.Vector2(0, 0));
   const panRef = useRef(new THREE.Vector2(0, 0));
@@ -44,15 +45,14 @@ function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
 
   const uniforms = useMemo(
     () => ({
-      uTime: { value: 0 },
       uResolution: { value: new THREE.Vector2(1, 1) },
       uRot: { value: new THREE.Vector2(0, 0) },
       uPan: { value: new THREE.Vector2(0, 0) },
       uGrow: { value: 0 },
       uZoom: { value: 1.0 },
-      uPower: { value: power },
-      uBailout: { value: bailout },
-      uMaxIterF: { value: maxIterCap },
+      uPower: { value: 8.0 },
+      uBailout: { value: 4.0 },
+      uMaxIterF: { value: 2.0 },
     }),
     []
   );
@@ -62,7 +62,7 @@ function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
     if (!material) return;
 
     const t = clock.getElapsedTime();
-    material.uniforms.uTime.value = t;
+    elapsedRef.current = t;
 
     const dpr = gl.getPixelRatio();
     material.uniforms.uResolution.value.set(size.width * dpr, size.height * dpr);
@@ -133,7 +133,7 @@ function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
       isDownRef.current = false;
 
       if (e.type === "pointerup" && e.button === 0 && !movedRef.current && dragModeRef.current === "rotate") {
-        growStartRef.current = matRef.current?.uniforms?.uTime?.value ?? 0;
+        growStartRef.current = elapsedRef.current;
       }
 
       try {
@@ -190,7 +190,12 @@ export default function Mandelbulb() {
   const [bailout, setBailout] = useState(4);
 
   return (
-    <ControlPanel maxDepth={24} defaultDepth={14} defaultInterval={250}>
+    <ControlPanel
+      maxDepth={24}
+      defaultDepth={14}
+      defaultInterval={250}
+      enableWireframe={false}
+    >
       {({ currentDepth }) => (
         <>
           <div style={extraPanelStyle}>
