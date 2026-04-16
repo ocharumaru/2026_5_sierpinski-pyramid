@@ -30,11 +30,11 @@ import { pageStyles, color, shape } from '../styles/pageStyles'
  * `image` が未設定のカードはプレースホルダー表示にフォールバックする。
  * 画像ファイルは `public/images/` フォルダに置くと Vite の設定なしで参照できる。
  */
+const availablePaths = new Set(fractals.map((f) => f.path))
+
 export default function ModelSelectionPage() {
   const navigate = useNavigate()
   const [hoveredId, setHoveredId] = useState(null)
-
-  const availablePaths = new Set(fractals.map((f) => f.path))
 
   return (
     <main style={pageStyle}>

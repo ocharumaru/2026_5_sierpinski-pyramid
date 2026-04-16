@@ -106,7 +106,7 @@ export default function ModelIntroPage() {
 
               {/* 概要（常に表示） */}
               <p style={overviewStyle}>
-                <strong style={{ color: color.textPrimary }}>概要：</strong>
+                <strong style={{ color: color.textPrimary }}>概要：</strong><br />
                 {content.overview}
               </p>
 

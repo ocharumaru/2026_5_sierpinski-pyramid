@@ -6,6 +6,10 @@ export const fractalCatalog = [
   {
     path: 'sierpinski',
     name: 'シェルピンスキー四面体',
+    stats: [
+      { label: '自己相似', value: '∞'},
+      { label: '次元数', value: '≈1.85'},
+    ],
     intro: {
       beginner: {
         overview: '正四面体が再帰的に分割されてできる自己相似構造。',
