@@ -60,16 +60,18 @@ const buttonBase = {
  * フラクタル生成の共通コントロールパネル。
  * ステップアニメーション制御、パラメータ入力、ワイヤーフレーム切り替えを提供する。
  *
- * @param {{ maxDepth: number, defaultDepth: number, defaultInterval: number, children: (state: { currentDepth: number, wireframe: boolean }) => React.ReactNode }} props
+ * @param {{ maxDepth: number, defaultDepth: number, defaultInterval: number, enableWireframe: boolean, children: (state: { currentDepth: number, wireframe: boolean }) => React.ReactNode }} props
  * @param {number} props.maxDepth - depthの最大値
  * @param {number} [props.defaultDepth=6] - depthの初期値
  * @param {number} [props.defaultInterval=450] - ステップ間隔の初期値（ms）
+ * @param {boolean} [props.enableWireframe=true] - ワイヤーフレーム切り替えUIを表示するか
  * @param {Function} props.children - render prop。{ currentDepth, wireframe } を受け取りMeshを返す
  */
 export default function ControlPanel({
   maxDepth,
   defaultDepth = 6,
   defaultInterval = 450,
+  enableWireframe = true,
   children,
 }) {
   const [targetDepth, setTargetDepth] = useState(defaultDepth);
@@ -85,6 +87,8 @@ export default function ControlPanel({
     resume,
     reset,
   } = useFractalAnimation(targetDepth, stepInterval);
+
+  const effectiveWireframe = enableWireframe ? wireframe : false;
 
   return (
     <>
@@ -162,14 +166,16 @@ export default function ControlPanel({
         </div>
 
         {/* オプション */}
-        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-          <input
-            type="checkbox"
-            checked={wireframe}
-            onChange={(e) => setWireframe(e.target.checked)}
-          />
-          ワイヤーフレーム
-        </label>
+        {enableWireframe && (
+          <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={wireframe}
+              onChange={(e) => setWireframe(e.target.checked)}
+            />
+            ワイヤーフレーム
+          </label>
+        )}
 
         <div style={{ marginTop: 12 }}>
           <Link
@@ -188,7 +194,7 @@ export default function ControlPanel({
       </div>
 
       {/* render prop でMeshを描画 */}
-      {children({ currentDepth, wireframe })}
+      {children({ currentDepth, wireframe: effectiveWireframe })}
     </>
   );
 }
