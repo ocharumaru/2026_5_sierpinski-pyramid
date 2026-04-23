@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { fractalCatalog } from '../models/fractalCatalog'
 import { fractals } from '../fractals/index'
 import ProgressBar from '../components/ProgressBar'
-import { pageStyles, color, shape } from '../styles/pageStyles'
+import { pageStyles, color } from '../styles/pageStyles'
 
 /**
  * モデル選択ページ（ステップ 2/4）
@@ -110,7 +110,7 @@ const footerStyle = {
   alignItems: 'center',
   gap: 16,
   padding: '12px 24px 14px',
-  borderBottom: `1px solid rgba(255, 255, 255, 0.07)`,
+  borderTop: `1px solid rgba(255, 255, 255, 0.07)`,
   background: color.bgPage,
 }
 

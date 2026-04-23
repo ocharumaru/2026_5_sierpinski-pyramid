@@ -3,16 +3,36 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getFractalCatalogByPath } from '../models/fractalCatalog'
 import BottomBar from '../components/BottomBar'
 import { pageStyles, color, shape } from '../styles/pageStyles'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
+
 
 /**
  * モデル専用ページ（ステップ 3/4）
  *
  * レイアウト構成:
- *   - スクロールエリア: 画像 → stat → 概要 → アコーディオン（特徴・応用・作り方）
- *   - ボトムバー固定: 進捗バー（3/4塗り）＋「← 前へ」「3D で見る →」
+ *   - スクロールエリア: 画像 → stat → アコーディオン（概要・特徴・応用・作り方）
+ *   - ボトムバー固定: 進捗バー（3/4塗り）＋「← 前へ」「生成する →」
  *
  * フォルダータブ（初心者向け / 上級者向け）でコンテンツを切り替える。
  * アコーディオン開閉状態はタブ切り替え時にリセットされる。
+ *
+ * ## Markdown / 数式の注意点
+ * fractalCatalog.js のテキストフィールドは String.raw`...` で記述すること。
+ * 通常のテンプレートリテラルでは \frac → \f（フォームフィード）のように
+ * バックスラッシュがJSのエスケープシーケンスとして解釈され、KaTeXに渡る前に
+ * 文字が化けてしまう。
+ *
+ * ```js
+ * // NG
+ * overview: `$\frac{1}{2}$`   // \f がフォームフィードになる
+ *
+ * // OK
+ * overview: String.raw`$\frac{1}{2}$`
+ * ```
  */
 export default function ModelIntroPage() {
   const { modelId } = useParams()
@@ -47,6 +67,7 @@ export default function ModelIntroPage() {
   }
 
   const accordionItems = [
+    { key: 'overview',    label: '概要',   text: content.overview },
     { key: 'feature',     label: '特徴',   text: content.feature },
     { key: 'application', label: '応用',   text: content.application },
     { key: 'howTo',       label: '作り方', text: content.howTo },
@@ -56,9 +77,7 @@ export default function ModelIntroPage() {
     <main style={pageStyle}>
       <div style={scrollAreaStyle}>
         <section style={pageStyles.panelWide}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <h2 style={pageStyles.subtitle}>{model.name}</h2>
-          </div>
+          <h2 style={pageStyles.subtitle}>{model.name}</h2>
 
           {/* フォルダータブ＋パネル */}
           <div>
@@ -82,11 +101,7 @@ export default function ModelIntroPage() {
               {/* 画像エリア */}
               <div style={imgAreaStyle}>
                 {model.image ? (
-                  <img
-                    src={model.image}
-                    alt={model.name}
-                    style={imgStyle}
-                  />
+                  <img src={model.image} alt={model.name} style={imgStyle} />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -104,34 +119,50 @@ export default function ModelIntroPage() {
                 </div>
               )}
 
-              {/* 概要（常に表示） */}
-              <p style={overviewStyle}>
-                <strong style={{ color: color.textPrimary }}>概要：</strong><br />
-                {content.overview}
-              </p>
-
-              {/* アコーディオン（特徴・応用・作り方） */}
+              {/* アコーディオン */}
               <div style={accListStyle}>
-                {accordionItems.map(({ key, label, text }) => (
-                  <div key={key} style={accItemStyle}>
-                    <button
-                      type="button"
-                      style={accHeadStyle}
-                      onClick={() => toggleItem(key)}
-                    >
-                      <span style={accLabelStyle}>{label}</span>
-                      <span style={{
-                        ...accArrowStyle,
-                        transform: openItems[key] ? 'rotate(45deg)' : 'rotate(0deg)',
-                      }}>
-                        ＋
-                      </span>
-                    </button>
-                    {openItems[key] && (
-                      <p style={accBodyStyle}>{text}</p>
-                    )}
-                  </div>
-                ))}
+                {accordionItems.map(({ key, label, text }) => {
+                  const buttonId = `accordion-button-${key}`
+                  const contentId = `accordion-panel-${key}`
+                  const isOpen = !!openItems[key]
+
+                  return (
+                    <div key={key} style={accItemStyle}>
+                      <button
+                        id={buttonId}
+                        type="button"
+                        style={accHeadStyle}
+                        aria-expanded={isOpen}
+                        aria-controls={contentId}
+                        onClick={() => toggleItem(key)}
+                      >
+                        <span style={accLabelStyle}>{label}</span>
+                        <span style={{
+                          ...accArrowStyle,
+                          transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                        }}>
+                          ＋
+                        </span>
+                      </button>
+                      {isOpen && (
+                        <div
+                          id={contentId}
+                          role="region"
+                          aria-labelledby={buttonId}
+                          style={accBodyStyle}
+                        >
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
+                            components={markdownComponents}
+                          >
+                            {text}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -147,6 +178,73 @@ export default function ModelIntroPage() {
       />
     </main>
   )
+}
+
+// ── Markdownコンポーネントのスタイル上書き ────────────────────
+//
+// ReactMarkdown が生成する要素にインラインスタイルを当てる。
+// テーブルは横幅が親要素を超えやすいため overflowX: auto の
+// ラッパーで囲み、table-layout: fixed で列幅を制御する。
+
+const markdownComponents = {
+  table: ({ node, ...props }) => (
+    <div style={{ overflowX: 'auto', width: '100%' }}>
+      <table
+        style={{
+          width: '100%',
+          tableLayout: 'fixed',
+          borderCollapse: 'collapse',
+          fontSize: 12,
+          color: color.textSecondary,
+        }}
+        {...props}
+      />
+    </div>
+  ),
+  th: ({ node, ...props }) => (
+    <th
+      style={{
+        borderBottom: `1px solid ${color.borderSubtle}`,
+        padding: '6px 8px',
+        textAlign: 'left',
+        fontWeight: 500,
+        color: color.textPrimary,
+        wordBreak: 'break-word',
+      }}
+      {...props}
+    />
+  ),
+  td: ({ node, ...props }) => (
+    <td
+      style={{
+        borderBottom: `1px solid ${color.borderSubtle}`,
+        padding: '6px 8px',
+        wordBreak: 'break-word',
+      }}
+      {...props}
+    />
+  ),
+  h4: ({ node, ...props }) => (
+    <h4
+      style={{ fontSize: 13, fontWeight: 500, color: color.textPrimary, margin: '12px 0 4px' }}
+      {...props}
+    />
+  ),
+  p: ({ node, ...props }) => (
+    <p style={{ margin: '4px 0', lineHeight: 1.75 }} {...props} />
+  ),
+  ul: ({ node, ...props }) => (
+    <ul style={{ paddingLeft: 18, margin: '4px 0' }} {...props} />
+  ),
+  ol: ({ node, ...props }) => (
+    <ol style={{ paddingLeft: 18, margin: '4px 0' }} {...props} />
+  ),
+  li: ({ node, ...props }) => (
+    <li style={{ margin: '2px 0', lineHeight: 1.7 }} {...props} />
+  ),
+  strong: ({ node, ...props }) => (
+    <strong style={{ color: color.textPrimary, fontWeight: 500 }} {...props} />
+  ),
 }
 
 // ── スタイル定数 ─────────────────────────────────────────────
@@ -170,13 +268,6 @@ const scrollAreaStyle = {
   padding: 24,
 }
 
-const eyebrowStyle = {
-  fontSize: 11,
-  fontWeight: 500,
-  letterSpacing: '0.08em',
-  color: color.purple,
-}
-
 const imgAreaStyle = {
   width: '100%',
   height: 200,
@@ -192,7 +283,7 @@ const imgAreaStyle = {
 const imgStyle = {
   width: '100%',
   height: '100%',
-  objectFit: 'cover',
+  objectFit: 'contain',
 }
 
 const statRowStyle = {
@@ -219,12 +310,6 @@ const statKeyStyle = {
   fontSize: 10,
   color: color.textMuted,
   marginTop: 3,
-}
-
-const overviewStyle = {
-  fontSize: 14,
-  color: color.textSecondary,
-  lineHeight: 1.75,
 }
 
 const accListStyle = {
@@ -259,6 +344,7 @@ const accArrowStyle = {
   color: color.textMuted,
   transition: 'transform 0.2s',
   display: 'inline-block',
+  flexShrink: 0,
 }
 
 const accBodyStyle = {
@@ -266,6 +352,9 @@ const accBodyStyle = {
   color: color.textSecondary,
   lineHeight: 1.75,
   padding: '0 2px 12px',
+  overflowX: 'auto',
+  wordBreak: 'break-word',
+  minWidth: 0,
 }
 
 // ── 画像プレースホルダー ──────────────────────────────────────

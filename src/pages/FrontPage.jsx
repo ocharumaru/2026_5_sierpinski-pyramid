@@ -16,12 +16,13 @@ export default function FrontPage() {
       <div style={scrollAreaStyle}>
         <section style={pageStyles.panel}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 10 }}>
-            <p style={eyebrowStyle}>3D Fractal Viewer</p>
+            <p style={eyebrowStyle}>issued by SDM</p>
             <h1 style={pageStyles.title}>
-              導入文を<br />一言で
+              3D Fractal Viwer
             </h1>
             <p style={pageStyles.lead}>
-              フラクタル自体の説明文
+              フラクタルとはどれだけ細部を拡大しても複雑な形状が現れるような図形です。<br />
+              生命や自然界に潜む美しくも不思議な構造を体感してみましょう。
             </p>
           </div>
         </section>
