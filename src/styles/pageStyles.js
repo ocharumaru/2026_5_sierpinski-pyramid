@@ -1,51 +1,38 @@
 /**
  * ページ共通スタイル定数
- *
- * コンセプト：「数学の美しさへの入口」
- * - 暗背景＋パープル系で 3D フラクタルの視覚的魅力を最大化
- * - ティールのアクセントで「自然を模倣した規則」という学術テーマを補強
- * - アンバーの選択・CTA で、待ち時間ユーザーが迷わず次へ進める導線を確保
- * - 初心者／上級者の二層構造で、子供〜技術者まで同じ画面に共存
  */
 
 // ── カラートークン ──────────────────────────────────────────
+
 const color = {
-  // 背景
-  bgPage:        '#0a0a12',
-  bgPanel:       'rgba(255, 255, 255, 0.04)',
-  bgPanelHover:  'rgba(255, 255, 255, 0.07)',
-  bgOverlay:     'rgba(0, 0, 0, 0.55)',
+  bgPage:        '#fdf6f0',   // 温かみのあるクリーム
+  bgPanel:       'rgba(180, 100, 60, 0.05)',
+  bgPanelHover:  'rgba(180, 100, 60, 0.09)',
+  bgOverlay:     'rgba(60, 30, 10, 0.45)',
 
-  // ボーダー
-  borderSubtle:  'rgba(255, 255, 255, 0.10)',
-  borderDefault: 'rgba(255, 255, 255, 0.18)',
+  borderSubtle:  'rgba(160, 80, 40, 0.12)',
+  borderDefault: 'rgba(160, 80, 40, 0.22)',
 
-  // テキスト
-  textPrimary:   'rgba(240, 240, 255, 0.92)',
-  textSecondary: 'rgba(200, 200, 255, 0.60)',
-  textMuted:     'rgba(200, 200, 255, 0.35)',
+  textPrimary:   'rgba(40, 20, 10, 0.88)',
+  textSecondary: 'rgba(80, 45, 25, 0.65)',
+  textMuted:     'rgba(80, 45, 25, 0.38)',
 
-  // ブランドカラー
-  purple:        '#7F77DD',   // メインアクセント
-  purpleLight:   '#AFA9EC',
-  purpleDim:     'rgba(127, 119, 221, 0.20)',
-  teal:          '#1D9E75',   // 自然・学術アクセント
-  tealDim:       'rgba(29, 158, 117, 0.20)',
-  amber:         '#f0c040',   // 選択状態・CTA
-  amberDim:      'rgba(240, 192, 64, 0.15)',
+  purple:        '#c0583a',   // テラコッタ（メインアクセント）
+  purpleLight:   '#d98060',
+  purpleDim:     'rgba(192, 88, 58, 0.12)',
+  teal:          '#8b7355',   // ウォームブラウン（サブアクセント）
+  tealDim:       'rgba(139, 115, 85, 0.12)',
+  amber:         '#c0583a',   // タブ選択もテラコッタで統一
+  amberDim:      'rgba(225, 91, 54, 0.1)',
 }
 
-// ── 共通スペーシング・シェイプ ────────────────────────────────
 const shape = {
-  radiusSm:  8,
-  radiusMd:  12,
-  radiusLg:  16,
+  radiusSm: 10,   
+  radiusMd: 14,
+  radiusLg: 20,
 }
 
-// ── エクスポート ──────────────────────────────────────────────
 export const pageStyles = {
-
-  // ── レイアウト ──────────────────────────────────────────────
 
   page: {
     minHeight: '100vh',
@@ -55,51 +42,51 @@ export const pageStyles = {
     padding: 24,
     background: color.bgPage,
     color: color.textPrimary,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Georgia, serif',
   },
 
   panel: {
     width: '100%',
     maxWidth: 520,
-    background: color.bgPanel,
+    background: '#fff9f4',
     border: `1px solid ${color.borderDefault}`,
     borderRadius: shape.radiusMd,
     padding: 24,
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
+    boxShadow: '0 2px 16px rgba(160,80,40,0.08)',
   },
 
   panelWide: {
     width: '100%',
     maxWidth: 860,
-    background: color.bgPanel,
+    background: '#f8f7e9d2',
     border: `1px solid ${color.borderDefault}`,
     borderRadius: shape.radiusMd,
     padding: 24,
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
+    boxShadow: '0 2px 16px rgba(160,80,40,0.08)',
   },
-
-  // ── タイポグラフィ ───────────────────────────────────────────
 
   title: {
     fontSize: 28,
-    fontWeight: 600,
+    fontWeight: 700,
     color: color.textPrimary,
-    lineHeight: 1.3,
+    lineHeight: 1.35,
   },
 
   subtitle: {
     fontSize: 22,
-    fontWeight: 500,
+    fontWeight: 600,
     color: color.textPrimary,
   },
 
   lead: {
     fontSize: 15,
-    lineHeight: 1.75,
+    lineHeight: 1.8,
     color: color.textSecondary,
   },
 
@@ -108,21 +95,17 @@ export const pageStyles = {
     color: color.textMuted,
   },
 
-  // ── ボタン・リンク ───────────────────────────────────────────
-
-  /** 緑→パープルに変更。メインCTA */
   primaryButton: {
     border: 'none',
     background: color.purple,
-    color: '#ffffff',
+    color: '#fff',
     borderRadius: shape.radiusSm,
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: 14,
     padding: '11px 18px',
     cursor: 'pointer',
   },
 
-  /** アウトライン（戻るボタンなど） */
   outlineButton: {
     border: `1px solid ${color.borderDefault}`,
     background: 'transparent',
@@ -133,13 +116,12 @@ export const pageStyles = {
     cursor: 'pointer',
   },
 
-  /** テキストリンク（下線あり） */
   primaryLink: {
     display: 'inline-block',
     width: 'fit-content',
     textDecoration: 'none',
     color: color.purple,
-    fontWeight: 600,
+    fontWeight: 700,
     borderRadius: shape.radiusSm,
     padding: '10px 18px',
     border: `1px solid ${color.purpleLight}`,
@@ -152,7 +134,6 @@ export const pageStyles = {
     cursor: 'pointer',
   },
 
-  /** カードのリンク（モデル選択ページなど） */
   secondaryLink: {
     textDecoration: 'none',
     color: color.textSecondary,
@@ -162,8 +143,6 @@ export const pageStyles = {
     textAlign: 'center',
     display: 'block',
   },
-
-  // ── カード ───────────────────────────────────────────────────
 
   cardGrid: {
     display: 'grid',
@@ -175,20 +154,20 @@ export const pageStyles = {
     border: `1px solid ${color.borderSubtle}`,
     borderRadius: shape.radiusMd,
     padding: 14,
-    background: color.bgPanel,
+    background: '#f5efda',
     display: 'flex',
     flexDirection: 'column',
     gap: 10,
     cursor: 'pointer',
-    transition: 'border-color 0.15s, background 0.15s',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
+    boxShadow: '0 1px 6px rgba(160,80,40,0.06)',
   },
 
   cardHover: {
     border: `1px solid ${color.purple}`,
-    background: color.bgPanelHover,
+    boxShadow: '0 3px 12px rgba(192,88,58,0.14)',
   },
 
-  /** カード選択状態（ModelSelectionPage でタップ後） */
   cardSelected: {
     border: `2px solid ${color.purple}`,
     background: color.purpleDim,
@@ -201,7 +180,6 @@ export const pageStyles = {
     minHeight: 44,
   },
 
-  /** サムネイル領域（Three.js プレビューや仮プレースホルダー） */
   thumbnail: {
     height: 96,
     border: `1px dashed ${color.borderDefault}`,
@@ -213,12 +191,6 @@ export const pageStyles = {
     background: color.purpleDim,
   },
 
-  // ── フォルダータブ（初心者向け / 上級者向け）────────────────
-  //
-  // ファイルフォルダーの見出し部分のように、タブが紙の束の縁として
-  // パネルの上端に並ぶ。選択中のタブが手前（zIndex高・top:0）、
-  // 非選択タブは 3px 下に沈んで奥に重なって見える。
-
   tabRow: {
     display: 'flex',
     gap: 0,
@@ -229,7 +201,7 @@ export const pageStyles = {
   tabButton: {
     border: `1.5px solid ${color.borderDefault}`,
     borderBottom: 'none',
-    background: color.bgPanel,
+    background: 'rgba(180, 100, 60, 0.04)',
     color: color.textMuted,
     borderRadius: `${shape.radiusSm}px ${shape.radiusSm}px 0 0`,
     padding: '9px 20px',
@@ -244,39 +216,32 @@ export const pageStyles = {
 
   tabButtonActive: {
     background: color.amber,
-    color: '#1a1200',
-    borderColor: color.amber,
+    color: '#fff',
     fontWeight: 700,
     top: 0,
     zIndex: 3,
   },
 
-  // ── 情報ボックス（フォルダータブと接続するパネル）────────────
-
   infoBox: {
-    background: color.bgPanel,
+    background: '#fcecdf',
     border: `1.5px solid ${color.borderDefault}`,
     borderRadius: `0 ${shape.radiusSm}px ${shape.radiusSm}px ${shape.radiusSm}px`,
     padding: 20,
     display: 'flex',
     flexDirection: 'column',
     gap: 12,
-    lineHeight: 1.75,
+    lineHeight: 1.8,
     fontSize: 14,
     color: color.textSecondary,
     position: 'relative',
     zIndex: 2,
   },
 
-  // ── アクション行 ─────────────────────────────────────────────
-
   actionRow: {
     display: 'flex',
     justifyContent: 'space-between',
     gap: 12,
   },
-
-  // ── バッジ ───────────────────────────────────────────────────
 
   badgeMath: {
     display: 'inline-block',
@@ -285,7 +250,7 @@ export const pageStyles = {
     borderRadius: 4,
     fontWeight: 500,
     background: color.purpleDim,
-    color: color.purpleLight,
+    color: color.purple,
   },
 
   badgeVisual: {
@@ -304,7 +269,7 @@ export const pageStyles = {
     padding: '3px 8px',
     borderRadius: 4,
     fontWeight: 500,
-    background: color.bgPanel,
+    background: 'rgba(80,45,25,0.07)',
     color: color.textMuted,
   },
 }

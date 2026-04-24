@@ -89,6 +89,7 @@ export default function ModelIntroPage() {
                   style={{
                     ...pageStyles.tabButton,
                     ...(level === lv ? pageStyles.tabButtonActive : {}),
+                    borderColor: level === lv ? color.amber : color.borderDefault,
                   }}
                   onClick={() => handleTabSwitch(lv)}
                 >
