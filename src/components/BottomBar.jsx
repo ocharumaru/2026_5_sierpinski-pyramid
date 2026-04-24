@@ -65,7 +65,7 @@ const primaryBtnStyle = {
   flex: 1,
   border: 'none',
   background: color.purple,
-  color: '#ffffff',
+  color: '#101015',
   borderRadius: shape.radiusSm,
   padding: '11px 0',
   fontSize: 14,
