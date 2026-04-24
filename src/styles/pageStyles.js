@@ -1,51 +1,39 @@
 /**
  * ページ共通スタイル定数
- *
- * コンセプト：「数学の美しさへの入口」
- * - 暗背景＋パープル系で 3D フラクタルの視覚的魅力を最大化
- * - ティールのアクセントで「自然を模倣した規則」という学術テーマを補強
- * - アンバーの選択・CTA で、待ち時間ユーザーが迷わず次へ進める導線を確保
- * - 初心者／上級者の二層構造で、子供〜技術者まで同じ画面に共存
  */
 
 // ── カラートークン ──────────────────────────────────────────
+
+
 const color = {
-  // 背景
-  bgPage:        '#0a0a12',
-  bgPanel:       'rgba(255, 255, 255, 0.04)',
-  bgPanelHover:  'rgba(255, 255, 255, 0.07)',
-  bgOverlay:     'rgba(0, 0, 0, 0.55)',
+  bgPage:        '#effff1',   // 夜の森
+  bgPanel:       'rgba(74, 222, 128, 0.04)',
+  bgPanelHover:  'rgba(212, 255, 228, 0.08)',
+  bgOverlay:     'rgba(0, 0, 0, 0.65)',
 
-  // ボーダー
-  borderSubtle:  'rgba(255, 255, 255, 0.10)',
-  borderDefault: 'rgba(255, 255, 255, 0.18)',
+  borderSubtle:  'rgba(61, 129, 86, 0.39)',
+  borderDefault: 'rgba(74, 222, 128, 0.85)',
 
-  // テキスト
-  textPrimary:   'rgba(240, 240, 255, 0.92)',
-  textSecondary: 'rgba(200, 200, 255, 0.60)',
-  textMuted:     'rgba(200, 200, 255, 0.35)',
+  textPrimary:   'rgba(81, 228, 122, 0.92)',   // 月明かりに照らされた葉
+  textSecondary: 'rgba(86, 193, 116, 0.65)',
+  textMuted:     'rgba(24, 188, 70, 0.35)',
 
-  // ブランドカラー
-  purple:        '#7F77DD',   // メインアクセント
-  purpleLight:   '#AFA9EC',
-  purpleDim:     'rgba(127, 119, 221, 0.20)',
-  teal:          '#1D9E75',   // 自然・学術アクセント
-  tealDim:       'rgba(29, 158, 117, 0.20)',
-  amber:         '#f0c040',   // 選択状態・CTA
-  amberDim:      'rgba(240, 192, 64, 0.15)',
+  purple:        '#86efac',   // 新芽・若葉（メインアクセント）
+  purpleLight:   '#bbf7d0',
+  purpleDim:     'rgba(134, 239, 172, 0.15)',
+  teal:          '#34d399',   // 苔・シダ（サブアクセント）
+  tealDim:       'rgba(52, 211, 153, 0.15)',
+  amber:         '#a3e635',   // 光を透かした黄緑（タブ選択）
+  amberDim:      'rgba(163, 230, 53, 0.15)',
 }
 
-// ── 共通スペーシング・シェイプ ────────────────────────────────
 const shape = {
-  radiusSm:  8,
-  radiusMd:  12,
-  radiusLg:  16,
+  radiusSm: 8,
+  radiusMd: 12,
+  radiusLg: 16,
 }
 
-// ── エクスポート ──────────────────────────────────────────────
 export const pageStyles = {
-
-  // ── レイアウト ──────────────────────────────────────────────
 
   page: {
     minHeight: '100vh',
@@ -82,8 +70,6 @@ export const pageStyles = {
     gap: 16,
   },
 
-  // ── タイポグラフィ ───────────────────────────────────────────
-
   title: {
     fontSize: 28,
     fontWeight: 600,
@@ -108,21 +94,17 @@ export const pageStyles = {
     color: color.textMuted,
   },
 
-  // ── ボタン・リンク ───────────────────────────────────────────
-
-  /** 緑→パープルに変更。メインCTA */
   primaryButton: {
     border: 'none',
     background: color.purple,
-    color: '#ffffff',
+    color: '#011a08',
     borderRadius: shape.radiusSm,
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: 14,
     padding: '11px 18px',
     cursor: 'pointer',
   },
 
-  /** アウトライン（戻るボタンなど） */
   outlineButton: {
     border: `1px solid ${color.borderDefault}`,
     background: 'transparent',
@@ -133,7 +115,6 @@ export const pageStyles = {
     cursor: 'pointer',
   },
 
-  /** テキストリンク（下線あり） */
   primaryLink: {
     display: 'inline-block',
     width: 'fit-content',
@@ -152,7 +133,6 @@ export const pageStyles = {
     cursor: 'pointer',
   },
 
-  /** カードのリンク（モデル選択ページなど） */
   secondaryLink: {
     textDecoration: 'none',
     color: color.textSecondary,
@@ -162,8 +142,6 @@ export const pageStyles = {
     textAlign: 'center',
     display: 'block',
   },
-
-  // ── カード ───────────────────────────────────────────────────
 
   cardGrid: {
     display: 'grid',
@@ -188,7 +166,6 @@ export const pageStyles = {
     background: color.bgPanelHover,
   },
 
-  /** カード選択状態（ModelSelectionPage でタップ後） */
   cardSelected: {
     border: `2px solid ${color.purple}`,
     background: color.purpleDim,
@@ -201,7 +178,6 @@ export const pageStyles = {
     minHeight: 44,
   },
 
-  /** サムネイル領域（Three.js プレビューや仮プレースホルダー） */
   thumbnail: {
     height: 96,
     border: `1px dashed ${color.borderDefault}`,
@@ -212,12 +188,6 @@ export const pageStyles = {
     color: color.textMuted,
     background: color.purpleDim,
   },
-
-  // ── フォルダータブ（初心者向け / 上級者向け）────────────────
-  //
-  // ファイルフォルダーの見出し部分のように、タブが紙の束の縁として
-  // パネルの上端に並ぶ。選択中のタブが手前（zIndex高・top:0）、
-  // 非選択タブは 3px 下に沈んで奥に重なって見える。
 
   tabRow: {
     display: 'flex',
@@ -244,14 +214,12 @@ export const pageStyles = {
 
   tabButtonActive: {
     background: color.amber,
-    color: '#1a1200',
+    color: '#0a1400',
     borderColor: color.amber,
     fontWeight: 700,
     top: 0,
     zIndex: 3,
   },
-
-  // ── 情報ボックス（フォルダータブと接続するパネル）────────────
 
   infoBox: {
     background: color.bgPanel,
@@ -268,15 +236,11 @@ export const pageStyles = {
     zIndex: 2,
   },
 
-  // ── アクション行 ─────────────────────────────────────────────
-
   actionRow: {
     display: 'flex',
     justifyContent: 'space-between',
     gap: 12,
   },
-
-  // ── バッジ ───────────────────────────────────────────────────
 
   badgeMath: {
     display: 'inline-block',
