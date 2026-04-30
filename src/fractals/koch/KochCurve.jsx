@@ -1,4 +1,5 @@
-import { useCreateLineGeometry } from "../../hooks/useCreateGeometry";
+import { useMemo } from "react";
+import { Line } from "@react-three/drei";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
 
@@ -22,7 +23,7 @@ const SIN60 = Math.sqrt(3) / 2;
  */
 function kochRecurse(out, ax, ay, bx, by, depth) {
   if (depth === 0) {
-    out.push(ax, ay, 0);
+    out.push([ax, ay, 0]);
     return;
   }
 
@@ -45,16 +46,16 @@ function kochRecurse(out, ax, ay, bx, by, depth) {
 }
 
 /**
- * depth に応じたコッホ曲線のフラットな頂点座標配列を生成する。
- * useCreateLineGeometry に渡すための関数。
+ * depth に応じたコッホ曲線の頂点座標配列を生成する。
+ * drei の Line コンポーネントに渡すための関数。
  *
  * @param {number} depth - フラクタルの再帰の深さ
- * @returns {number[]} フラットな頂点座標配列 [x,y,z, ...]
+ * @returns {[number, number, number][]} [x,y,z] タプルの配列
  */
 function generatePoints(depth) {
   const out = [];
   kochRecurse(out, -1, 0, 1, 0, depth);
-  out.push(1, 0, 0);
+  out.push([1, 0, 0]);
   return out;
 }
 
@@ -64,16 +65,13 @@ function generatePoints(depth) {
 
 /**
  * コッホ曲線のラインコンポーネント。
+ * drei の Line を使うことで lineWidth による太線描画が可能。
  *
  * @param {{ depth: number }} props
  */
 function KochLine({ depth }) {
-  const geometry = useCreateLineGeometry(generatePoints, depth);
-  return (
-    <line geometry={geometry}>
-      <lineBasicMaterial color="#00e5ff" />
-    </line>
-  );
+  const points = useMemo(() => generatePoints(depth), [depth]);
+  return <Line points={points} color="#00e5ff" lineWidth={2} />;
 }
 
 /**
