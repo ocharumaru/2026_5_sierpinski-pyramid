@@ -29,7 +29,10 @@ src/
 ├── fractals/
 │   ├── index.js                # フラクタル描画レジストリ
 │   ├── SierpinskiPyramid.jsx   # シェルピンスキー四面体
-│   └── MengerSponge.jsx        # メンガースポンジ
+│   ├── MengerSponge.jsx        # メンガースポンジ
+│   └── mandelbulb/
+│       ├── Mandelbulb.jsx      # マンデルバルブ（レイマーチング）
+│       └── mandelbulbShader.js # マンデルバルブ用シェーダー
 ├── models/
 │   └── fractalCatalog.js       # モデル説明データ（初心者向け / 上級者向け）
 ├── pages/
@@ -96,7 +99,7 @@ function MyLine({ depth }) {
 
 ### 各フラクタルファイルの責務
 
-各 `src/fractals/XxxFractal.jsx` が持つのは図形固有のロジックだけ。
+各 `src/fractals/<model>/Xxx.jsx` が持つのは図形固有のロジックだけ。
 
 1. 生成ロジック（頂点座標を計算する純粋関数）
 2. Mesh コンポーネント（ジオメトリにマテリアルを当てて描画）
@@ -116,8 +119,9 @@ function MyLine({ depth }) {
 | `/models/:modelId` | モデル専用ページ（初心者向け / 上級者向け） |
 | `/sierpinski` | シェルピンスキー四面体 |
 | `/menger` | メンガースポンジ |
+| `/mandelbulb` | マンデルバルブ |
 
-3D描画ページ（`/sierpinski`, `/menger`）は `React.lazy` + `Suspense` で遅延読み込みしている。
+3D描画ページ（`/sierpinski`, `/menger`, `/mandelbulb`）は `React.lazy` + `Suspense` で遅延読み込みしている。
 
 ### フラクタルレジストリ（`src/fractals/index.js`）
 
@@ -147,7 +151,7 @@ export const fractals = fractalCatalog
 
 ## 新しいフラクタル図形の追加手順
 
-1. `src/fractals/NewFractal.jsx` を作成
+1. `src/fractals/newFractal/` を作成
 2. 生成ロジック・Mesh・シーンの3層構造で実装し、各関数に JSDoc を記述
 3. `src/models/fractalCatalog.js` に `path`, `name`, `intro` を追加
 4. `src/fractals/index.js` の `componentsByPath` に lazy import を追加
@@ -166,7 +170,7 @@ export const fractals = fractalCatalog
 
 ```js
 // src/fractals/index.js の componentsByPath に追加
-koch: lazy(() => import('./KochSnowflake')),
+koch: lazy(() => import('./koch/KochSnowflake')),
 ```
 
 `App.jsx` の変更は不要。ルーティングとページ遷移は自動で反映される。
