@@ -13,6 +13,7 @@ const componentsByPath = {
   sierpinski: lazy(() => import('./SierpinskiPyramid')),
   menger: lazy(() => import('./MengerSponge')),
   mandelbulb: lazy(() => import('./mandelbulb/Mandelbulb')),
+  koch: lazy(() => import('./koch/KochCurve')),
 }
 
 export const fractals = fractalCatalog
