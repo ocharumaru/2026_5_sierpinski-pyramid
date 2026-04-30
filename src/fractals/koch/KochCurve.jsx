@@ -14,7 +14,7 @@ const SIN60 = Math.sqrt(3) / 2;
  * コッホ曲線の頂点列を再帰的に out 配列へ追加する。
  * depth=0 では始点のみを out に追加する（終点は次の呼び出しの始点として追加される）。
  *
- * @param {number[]} out - [x,y,z, ...] 形式のフラット配列（破壊的に追加）
+ * @param {[number, number, number][]} out - [x,y,z] 形式のタプルの配列（破壊的に追加）
  * @param {number} ax - 始点 x
  * @param {number} ay - 始点 y
  * @param {number} bx - 終点 x

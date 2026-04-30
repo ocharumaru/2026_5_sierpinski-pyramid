@@ -28,8 +28,14 @@ src/
 │   └── useFractalAnimation.js  # ステップアニメーション制御フック
 ├── fractals/
 │   ├── index.js                # フラクタル描画レジストリ
-│   ├── SierpinskiPyramid.jsx   # シェルピンスキー四面体
-│   ├── MengerSponge.jsx        # メンガースポンジ
+│   ├── sierpinski/
+│   │   └── SierpinskiPyramid.jsx # シェルピンスキー四面体
+│   ├── menger/
+│   │   └── MengerSponge.jsx      # メンガースポンジ
+│   ├── koch/
+│   │   └── KochCurve.jsx       # コッホ曲線
+│   ├── hilbert/
+│   │   └── HilbertCurve.jsx    # ヒルベルト曲線
 │   └── mandelbulb/
 │       ├── Mandelbulb.jsx      # マンデルバルブ（レイマーチング）
 │       └── mandelbulbShader.js # マンデルバルブ用シェーダー
@@ -120,8 +126,10 @@ function MyLine({ depth }) {
 | `/sierpinski` | シェルピンスキー四面体 |
 | `/menger` | メンガースポンジ |
 | `/mandelbulb` | マンデルバルブ |
+| `/koch` | コッホ曲線 |
+| `/hilbert` | ヒルベルト曲線 |
 
-3D描画ページ（`/sierpinski`, `/menger`, `/mandelbulb`）は `React.lazy` + `Suspense` で遅延読み込みしている。
+3D描画ページ（`/sierpinski`, `/menger`, `/mandelbulb`, `/koch`, `/hilbert`）は `React.lazy` + `Suspense` で遅延読み込みしている。
 
 ### フラクタルレジストリ（`src/fractals/index.js`）
 
@@ -129,8 +137,8 @@ function MyLine({ depth }) {
 
 ```js
 const componentsByPath = {
-  sierpinski: lazy(() => import('./SierpinskiPyramid')),
-  menger: lazy(() => import('./MengerSponge')),
+  sierpinski: lazy(() => import('./sierpinski/SierpinskiPyramid')),
+  menger: lazy(() => import('./menger/MengerSponge')),
 }
 
 export const fractals = fractalCatalog
@@ -170,7 +178,7 @@ export const fractals = fractalCatalog
 
 ```js
 // src/fractals/index.js の componentsByPath に追加
-koch: lazy(() => import('./koch/KochSnowflake')),
+koch: lazy(() => import('./koch/KochCurve')),
 ```
 
 `App.jsx` の変更は不要。ルーティングとページ遷移は自動で反映される。
