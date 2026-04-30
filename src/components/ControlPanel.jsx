@@ -1,59 +1,79 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFractalAnimation } from "../hooks/useFractalAnimation";
+import { color, shape, pageStyles } from "../styles/pageStyles";
+
+function useIsMobile(breakpoint = 600) {
+  const [isMobile, setIsMobile] = useState(
+    () => window.innerWidth < breakpoint
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    const update = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 /* =========================
    スタイル定義
    ========================= */
 
-const panelStyle = {
-  position: "absolute",
-  top: 20,
-  left: 20,
-  padding: "16px 20px",
-  background: "rgba(0,0,0,0.75)",
-  color: "white",
-  borderRadius: 10,
-  zIndex: 10,
-  fontFamily: "sans-serif",
-  fontSize: 14,
-  minWidth: 280,
+const base = {
+  panel: {
+    position: "absolute",
+    background: color.bgOverlay,
+    color: color.textPrimary,
+    borderRadius: shape.radiusMd,
+    border: `1px solid ${color.borderDefault}`,
+    zIndex: 10,
+    fontFamily: "sans-serif",
+    maxWidth: "calc(100vw - 32px)",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
+    paddingBottom: 8,
+    borderBottom: `1px solid ${color.borderSubtle}`,
+  },
+  row: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
+  },
+  input: {
+    background: color.bgPanel,
+    border: `1px solid ${color.borderDefault}`,
+    borderRadius: shape.radiusSm,
+    color: color.textPrimary,
+    textAlign: "right",
+  },
 };
 
-const headerStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 12,
-  paddingBottom: 8,
-  borderBottom: "1px solid rgba(255,255,255,0.2)",
+const desktop = {
+  panel:  { ...base.panel,  top: 16, left: 16, padding: "12px 14px", fontSize: 13 },
+  header: { ...base.header, marginBottom: 10 },
+  row:    { ...base.row,    marginBottom: 8 },
+  label:  { color: color.textSecondary, fontSize: 12 },
+  input:  { ...base.input,  width: 72, padding: "3px 8px", fontSize: 13 },
+  button: { ...pageStyles.primaryButton, padding: "7px 12px", fontSize: 12 },
+  buttonRow: { display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" },
+  link:   { ...pageStyles.outlineButton, padding: "6px 12px", fontSize: 12, display: "inline-block", textDecoration: "none" },
 };
 
-const rowStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 8,
-};
-
-const inputStyle = {
-  width: 80,
-  padding: "4px 8px",
-  background: "rgba(255,255,255,0.1)",
-  border: "1px solid rgba(255,255,255,0.3)",
-  borderRadius: 4,
-  color: "white",
-  fontSize: 14,
-  textAlign: "right",
-};
-
-const buttonBase = {
-  padding: "8px 16px",
-  border: "none",
-  borderRadius: 6,
-  fontSize: 14,
-  fontWeight: "bold",
-  cursor: "pointer",
+const mobile = {
+  panel:  { ...base.panel,  top: 12, left: 12, padding: "8px 10px", fontSize: 12 },
+  header: { ...base.header, marginBottom: 8 },
+  row:    { ...base.row,    marginBottom: 6 },
+  label:  { color: color.textSecondary, fontSize: 11 },
+  input:  { ...base.input,  width: 60, padding: "2px 6px", fontSize: 12 },
+  button: { ...pageStyles.primaryButton, padding: "5px 9px", fontSize: 11 },
+  buttonRow: { display: "flex", gap: 4, marginBottom: 10, flexWrap: "wrap" },
+  link:   { ...pageStyles.outlineButton, padding: "4px 10px", fontSize: 11, display: "inline-block", textDecoration: "none" },
 };
 
 /**
@@ -61,11 +81,6 @@ const buttonBase = {
  * ステップアニメーション制御、パラメータ入力、ワイヤーフレーム切り替えを提供する。
  *
  * @param {{ maxDepth: number, defaultDepth: number, defaultInterval: number, enableWireframe: boolean, children: (state: { currentDepth: number, wireframe: boolean }) => React.ReactNode }} props
- * @param {number} props.maxDepth - depthの最大値
- * @param {number} [props.defaultDepth=6] - depthの初期値
- * @param {number} [props.defaultInterval=450] - ステップ間隔の初期値（ms）
- * @param {boolean} [props.enableWireframe=true] - ワイヤーフレーム切り替えUIを表示するか
- * @param {Function} props.children - render prop。{ currentDepth, wireframe } を受け取りMeshを返す
  */
 export default function ControlPanel({
   maxDepth,
@@ -77,6 +92,8 @@ export default function ControlPanel({
   const [targetDepth, setTargetDepth] = useState(defaultDepth);
   const [stepInterval, setStepInterval] = useState(defaultInterval);
   const [wireframe, setWireframe] = useState(false);
+  const isMobile = useIsMobile();
+  const s = isMobile ? mobile : desktop;
 
   const {
     currentDepth,
@@ -92,31 +109,31 @@ export default function ControlPanel({
 
   return (
     <>
-      <div style={panelStyle}>
+      <div style={s.panel}>
         {/* ヘッダー */}
-        <div style={headerStyle}>
+        <div style={s.header}>
           <strong>フラクタル生成</strong>
-          <span style={{ opacity: 0.7 }}>
+          <span style={{ color: color.textSecondary, whiteSpace: "nowrap" }}>
             ステップ {currentDepth} / {targetDepth}
             {isPlaying ? " ▶" : isFinished ? " ■" : " ⏸"}
           </span>
         </div>
 
         {/* パラメータ入力 */}
-        <div style={rowStyle}>
-          <span>目標深さ（depth）</span>
+        <div style={{ ...s.row, marginTop: isMobile ? 8 : 10 }}>
+          <span style={s.label}>目標深さ（depth）</span>
           <input
             type="number"
             min={0}
             max={maxDepth}
             value={targetDepth}
             onChange={(e) => setTargetDepth(Math.max(0, Math.min(maxDepth, Number(e.target.value))))}
-            style={inputStyle}
+            style={s.input}
             disabled={isPlaying}
           />
         </div>
-        <div style={{ ...rowStyle, marginBottom: 16 }}>
-          <span>ステップ間隔（ms）</span>
+        <div style={{ ...s.row, marginBottom: isMobile ? 10 : 14 }}>
+          <span style={s.label}>ステップ間隔（ms）</span>
           <input
             type="number"
             min={100}
@@ -124,20 +141,21 @@ export default function ControlPanel({
             step={50}
             value={stepInterval}
             onChange={(e) => setStepInterval(Math.max(100, Number(e.target.value)))}
-            style={inputStyle}
+            style={s.input}
             disabled={isPlaying}
           />
         </div>
 
         {/* 操作ボタン */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <div style={s.buttonRow}>
           <button
             onClick={start}
             disabled={isPlaying}
             style={{
-              ...buttonBase,
-              background: isPlaying ? "#555" : "#2dd4a8",
-              color: isPlaying ? "#999" : "#000",
+              ...s.button,
+              background: isPlaying ? color.bgPanel : color.teal,
+              color: isPlaying ? color.textMuted : "#fff",
+              border: isPlaying ? `1px solid ${color.borderDefault}` : "none",
             }}
           >
             生成スタート
@@ -146,9 +164,10 @@ export default function ControlPanel({
             onClick={isPlaying ? pause : resume}
             disabled={isFinished && !isPlaying}
             style={{
-              ...buttonBase,
-              background: isFinished && !isPlaying ? "#555" : "#f0c040",
-              color: isFinished && !isPlaying ? "#999" : "#000",
+              ...s.button,
+              background: isFinished && !isPlaying ? color.bgPanel : color.amber,
+              color: isFinished && !isPlaying ? color.textMuted : "#1a1200",
+              border: isFinished && !isPlaying ? `1px solid ${color.borderDefault}` : "none",
             }}
           >
             {isPlaying ? "一時停止" : "再開"}
@@ -156,9 +175,10 @@ export default function ControlPanel({
           <button
             onClick={reset}
             style={{
-              ...buttonBase,
-              background: "#f06080",
+              ...s.button,
+              background: "rgba(220, 60, 80, 0.85)",
               color: "#fff",
+              border: "none",
             }}
           >
             リセット
@@ -167,7 +187,7 @@ export default function ControlPanel({
 
         {/* オプション */}
         {enableWireframe && (
-          <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", color: color.textSecondary, fontSize: s.label.fontSize }}>
             <input
               type="checkbox"
               checked={wireframe}
@@ -177,17 +197,8 @@ export default function ControlPanel({
           </label>
         )}
 
-        <div style={{ marginTop: 12 }}>
-          <Link
-            to="/models"
-            style={{
-              ...buttonBase,
-              display: "inline-block",
-              textDecoration: "none",
-              background: "#5f8df7",
-              color: "#fff",
-            }}
-          >
+        <div style={{ marginTop: isMobile ? 8 : 10 }}>
+          <Link to="/models" style={s.link}>
             図形選択に戻る
           </Link>
         </div>
