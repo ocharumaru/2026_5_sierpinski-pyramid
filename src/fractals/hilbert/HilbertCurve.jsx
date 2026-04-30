@@ -59,6 +59,21 @@ function generatePoints(depth) {
   // iterations は depth - 1 とする（depth=1で8頂点）
   // 空間の中心を[0,0,0]とし、半分の幅(half)を1とする(幅2の立方体:-1～1)
   hilbert3D([0, 0, 0], 1, depth - 1, 0, 1, 2, 3, 4, 5, 6, 7, out);
+
+  // 全体の大きさが depth によって変わらないように [-1, 1] の範囲に正規化
+  let maxCoord = 0;
+  for (const p of out) {
+    maxCoord = Math.max(maxCoord, Math.abs(p[0]), Math.abs(p[1]), Math.abs(p[2]));
+  }
+  
+  if (maxCoord > 0) {
+    for (let i = 0; i < out.length; i++) {
+      out[i][0] /= maxCoord;
+      out[i][1] /= maxCoord;
+      out[i][2] /= maxCoord;
+    }
+  }
+
   return out;
 }
 
