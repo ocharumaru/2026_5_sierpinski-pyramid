@@ -10,8 +10,8 @@ import { fractalCatalog } from '../models/fractalCatalog'
  * @property {React.LazyExoticComponent} component - lazy import されたコンポーネント
  */
 const componentsByPath = {
-  sierpinski: lazy(() => import('./SierpinskiPyramid')),
-  menger: lazy(() => import('./MengerSponge')),
+  sierpinski: lazy(() => import('./sierpinski/SierpinskiPyramid')),
+  menger: lazy(() => import('./menger/MengerSponge')),
   mandelbulb: lazy(() => import('./mandelbulb/Mandelbulb')),
   koch: lazy(() => import('./koch/KochCurve')),
   hilbert: lazy(() => import('./hilbert/HilbertCurve')),
