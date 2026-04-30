@@ -58,6 +58,24 @@ export const fractalCatalog = [
     },
   },
   {
+    path: 'hilbert',
+    name: '3次元ヒルベルト曲線',
+    intro: {
+      beginner: {
+        overview: '空間を隙間なく埋め尽くすように折りたたまれた3次元の曲線。',
+        feature: 'depthを増やすごとに曲線が空間全体を均一に満たす様子を3Dで観察できます。',
+        application: '3Dプリンタの充填パスや体積データのインデックス構造として実用されています。',
+        howTo: 'OrbitControlsでぐるぐる回しながら、曲線がどう空間を埋めるか確認しましょう。',
+      },
+      advanced: {
+        overview: '各反復で8つのサブキューブを特定の順序・回転で接続する空間充填曲線。',
+        feature: 'depthがnのとき頂点数は8^(n+1)、局所性保存特性により近い点が連続してアクセスされます。',
+        application: 'オクツリー探索、GPUキャッシュ効率最適化、N体シミュレーションの粒子ソートに活用できます。',
+        howTo: 'depth 3〜4でワイヤー密度と空間充填の程度を比較し、スケーリング則を観察します。',
+      },
+    },
+  },
+  {
     path: 'koch',
     name: 'コッホ曲線',
     intro: {
