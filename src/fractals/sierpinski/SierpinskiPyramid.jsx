@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { useCreateGeometry } from "../hooks/useCreateGeometry";
-import FractalScene from "../components/FractalScene";
-import ControlPanel from "../components/ControlPanel";
+import { useCreateGeometry } from "../../hooks/useCreateGeometry";
+import FractalScene from "../../components/FractalScene";
+import ControlPanel from "../../components/ControlPanel";
 
 /* =========================
    シェルピンスキー生成ロジック
