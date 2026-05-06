@@ -1,4 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import ControlPanel from "../../components/ControlPanel";
@@ -35,32 +36,21 @@ const mobilePanel = {
 };
 
 /**
- * フルスクリーン平面にマンデルバルブをレイマーチング描画する。
+ * カメラを内包する大きな球の内側にマンデルバルブのレイマーチを描画する。
+ * カメラ操作は OrbitControls に任せ、シェーダ側は cameraPosition と
+ * 各フラグメントの worldPos からレイを再構築する。
  *
  * @param {{ power: number, bailout: number, maxIterCap: number }} props
  */
-function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
+function MandelbulbBackground({ power, bailout, maxIterCap }) {
   const matRef = useRef(null);
   const elapsedRef = useRef(0);
-
-  const rotRef = useRef(new THREE.Vector2(0, 0));
-  const panRef = useRef(new THREE.Vector2(0, 0));
-  const lastPosRef = useRef({ x: 0, y: 0 });
-  const zoomRef = useRef(1.0);
-  const dragModeRef = useRef("rotate");
-  const isDownRef = useRef(false);
-  const movedRef = useRef(false);
   const growStartRef = useRef(0);
-
-  const { gl, size } = useThree();
+  const { gl } = useThree();
 
   const uniforms = useMemo(
     () => ({
-      uResolution: { value: new THREE.Vector2(1, 1) },
-      uRot: { value: new THREE.Vector2(0, 0) },
-      uPan: { value: new THREE.Vector2(0, 0) },
       uGrow: { value: 0 },
-      uZoom: { value: 1.0 },
       uPower: { value: 8.0 },
       uBailout: { value: 4.0 },
       uMaxIterF: { value: 2.0 },
@@ -75,119 +65,72 @@ function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
     const t = clock.getElapsedTime();
     elapsedRef.current = t;
 
-    const dpr = gl.getPixelRatio();
-    material.uniforms.uResolution.value.set(size.width * dpr, size.height * dpr);
-
     material.uniforms.uPower.value = power;
     material.uniforms.uBailout.value = bailout;
     material.uniforms.uMaxIterF.value = maxIterCap;
 
     const grow = THREE.MathUtils.clamp((t - growStartRef.current) / 2.5, 0, 1);
     material.uniforms.uGrow.value = grow;
-
-    material.uniforms.uZoom.value = THREE.MathUtils.lerp(material.uniforms.uZoom.value, zoomRef.current, 0.1);
-    material.uniforms.uRot.value.copy(rotRef.current);
-    material.uniforms.uPan.value.copy(panRef.current);
   });
 
+  // タップ/クリックで成長アニメをリセット。
+  // ブラウザの click イベントは OrbitControls のドラッグ終端でも発火することが
+  // あるので使わず、pointerdown→pointerup の移動量が閾値以下のときだけ
+  // タップと判定する。
   useEffect(() => {
     const el = gl.domElement;
-    const clickThreshold = 6;
-    const rotSpeed = 2.4;
-    const panSpeed = 2.0;
-
-    const onContextMenu = (e) => {
-      e.preventDefault();
-    };
+    const threshold = 6;
+    let hasDown = false;
+    let moved = false;
+    let downX = 0;
+    let downY = 0;
 
     const onDown = (e) => {
-      isDownRef.current = true;
-      movedRef.current = false;
-      dragModeRef.current = e.button === 2 ? "pan" : "rotate";
-      lastPosRef.current.x = e.clientX;
-      lastPosRef.current.y = e.clientY;
-      try {
-        el.setPointerCapture(e.pointerId);
-      } catch {
-        // noop
-      }
+      if (!e.isPrimary) return;
+      hasDown = true;
+      moved = false;
+      downX = e.clientX;
+      downY = e.clientY;
     };
 
     const onMove = (e) => {
-      if (!isDownRef.current) return;
-
-      const dx = e.clientX - lastPosRef.current.x;
-      const dy = e.clientY - lastPosRef.current.y;
-
-      if (dx * dx + dy * dy > clickThreshold * clickThreshold) {
-        movedRef.current = true;
-      }
-
-      lastPosRef.current.x = e.clientX;
-      lastPosRef.current.y = e.clientY;
-
-      if (dragModeRef.current === "pan") {
-        panRef.current.x += (dx / size.height) * panSpeed;
-        panRef.current.y -= (dy / size.height) * panSpeed;
-      } else {
-        const yaw = rotRef.current.x + (dx / size.width) * rotSpeed * Math.PI;
-        const pitch = rotRef.current.y + (dy / size.height) * rotSpeed * Math.PI;
-        rotRef.current.set(yaw, THREE.MathUtils.clamp(pitch, -1.45, 1.45));
+      if (!hasDown) return;
+      const dx = e.clientX - downX;
+      const dy = e.clientY - downY;
+      if (dx * dx + dy * dy > threshold * threshold) {
+        moved = true;
       }
     };
 
     const onUp = (e) => {
-      // pointerleave / pointercancel などで誤って再生成しないように、
-      // 実際にポインターダウンした操作のみを終了処理の対象にする。
-      if (!isDownRef.current) return;
-
-      isDownRef.current = false;
-
-      if (e.type === "pointerup" && e.button === 0 && !movedRef.current && dragModeRef.current === "rotate") {
+      if (!hasDown || !e.isPrimary) return;
+      hasDown = false;
+      if (!moved) {
         growStartRef.current = elapsedRef.current;
       }
-
-      try {
-        el.releasePointerCapture(e.pointerId);
-      } catch {
-        // noop
-      }
-    };
-
-    const onWheel = (e) => {
-      e.preventDefault();
-      const zoomSpeed = 0.001;
-      const nextZoom = zoomRef.current - e.deltaY * zoomSpeed;
-      zoomRef.current = Math.max(0.1, Math.min(nextZoom, 10.0));
     };
 
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onMove);
     el.addEventListener("pointerup", onUp);
     el.addEventListener("pointercancel", onUp);
-    el.addEventListener("pointerleave", onUp);
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("contextmenu", onContextMenu);
-
     return () => {
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerup", onUp);
       el.removeEventListener("pointercancel", onUp);
-      el.removeEventListener("pointerleave", onUp);
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("contextmenu", onContextMenu);
     };
-  }, [gl, size.width, size.height]);
+  }, [gl]);
 
   return (
     <mesh>
-      <planeGeometry args={[2, 2]} />
+      <sphereGeometry args={[30, 16, 16]} />
       <shaderMaterial
         ref={matRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={uniforms}
+        side={THREE.BackSide}
       />
     </mesh>
   );
@@ -242,21 +185,25 @@ export default function Mandelbulb() {
 
             <div style={s.hint}>
               {isMobile
-                ? "1本指ドラッグ: 回転 / タップ: 成長リセット"
+                ? "1本指: 回転 / 2本指: ピンチで拡大・ドラッグで移動 / タップ: 成長リセット"
                 : "左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム / クリック: 成長リセット"}
             </div>
           </div>
 
           <Canvas
-            style={{ width: "100vw", height: "100vh" }}
-            orthographic
-            camera={{ position: [0, 0, 1], zoom: 1 }}
-            dpr={[1, 2]}
+            style={{ width: "100vw", height: "100dvh" }}
+            camera={{ position: [0, 0, 3.0], fov: 50 }}
+            dpr={[1, isMobile ? 1.25 : 2]}
           >
-            <MandelbulbFullscreen
+            <MandelbulbBackground
               power={power}
               bailout={bailout}
               maxIterCap={Math.max(2, currentDepth)}
+            />
+            <OrbitControls
+              enableDamping
+              minDistance={1.5}
+              maxDistance={20}
             />
           </Canvas>
         </>

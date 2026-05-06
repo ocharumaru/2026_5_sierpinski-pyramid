@@ -1,36 +1,24 @@
+// Three.js のビルトイン uniform `cameraPosition`、`modelMatrix`、`viewMatrix`、
+// `projectionMatrix` は ShaderMaterial が自動で注入する。
+
 export const vertexShader = /* glsl */ `
-varying vec2 vUv;
+varying vec3 vWorldPos;
 void main() {
-  vUv = uv;
-  gl_Position = vec4(position.xy, 0.0, 1.0);
+  vec4 worldPos = modelMatrix * vec4(position, 1.0);
+  vWorldPos = worldPos.xyz;
+  gl_Position = projectionMatrix * viewMatrix * worldPos;
 }
 `;
 
 export const fragmentShader = /* glsl */ `
 precision highp float;
 
-varying vec2 vUv;
+varying vec3 vWorldPos;
 
-uniform vec2 uResolution;
-
-uniform vec2 uRot;
-uniform vec2 uPan;
 uniform float uGrow;
-uniform float uZoom;
-
 uniform float uPower;
 uniform float uBailout;
 uniform float uMaxIterF;
-
-mat3 rotY(float a) {
-  float c = cos(a), s = sin(a);
-  return mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
-}
-
-mat3 rotX(float a) {
-  float c = cos(a), s = sin(a);
-  return mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
-}
 
 float mandelbulbDE(vec3 p, int maxIter, float power, float bailout) {
   vec3 z = p;
@@ -84,7 +72,7 @@ bool raymarch(
   out float travel
 ) {
   float t = 0.0;
-  float tMax = 30.0;
+  float tMax = 50.0;
   float eps = 1e-3;
 
   for (int step = 0; step < 160; step++) {
@@ -120,19 +108,9 @@ vec3 shade(vec3 p, vec3 n, vec3 ro, float travel) {
 }
 
 void main() {
-  vec2 frag = vUv * uResolution;
-  vec2 p = (frag - 0.5 * uResolution) / uResolution.y - uPan;
-
-  float dist = 4.0 / uZoom;
-  vec3 ro = vec3(0.0, 0.0, dist);
-  vec3 rd = normalize(vec3(p, -1.5));
-
-  float ay = uRot.x;
-  float ax = uRot.y;
-  mat3 R = rotY(ay) * rotX(ax);
-
-  ro = R * ro;
-  rd = R * rd;
+  // カメラ位置から、いまレンダしている囲みスフィア表面に向かう方向がそのまま視線。
+  vec3 ro = cameraPosition;
+  vec3 rd = normalize(vWorldPos - cameraPosition);
 
   int maxIter = int(mix(2.0, uMaxIterF, clamp(uGrow, 0.0, 1.0)));
 
