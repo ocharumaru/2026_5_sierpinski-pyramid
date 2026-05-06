@@ -2,25 +2,36 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import ControlPanel from "../../components/ControlPanel";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { color, shape } from "../../styles/pageStyles";
 import { vertexShader, fragmentShader } from "./mandelbulbShader";
 
-const extraPanelStyle = {
+const basePanel = {
   position: "absolute",
-  top: 20,
-  right: 20,
-  minWidth: 260,
-  padding: "14px 16px",
-  borderRadius: 10,
-  background: "rgba(0, 0, 0, 0.75)",
-  color: "white",
+  background: color.bgOverlay,
+  color: color.textPrimary,
+  border: `1px solid ${color.borderDefault}`,
+  borderRadius: shape.radiusMd,
   fontFamily: "sans-serif",
-  fontSize: 13,
   zIndex: 10,
 };
 
-const sliderStyle = {
-  width: "100%",
-  marginTop: 4,
+const desktopPanel = {
+  panel:  { ...basePanel, top: 16, right: 16, padding: "12px 14px", width: 260, fontSize: 13 },
+  title:  { fontWeight: 700, fontSize: 13, color: color.textPrimary, paddingBottom: 8, borderBottom: `1px solid ${color.borderSubtle}` },
+  field:  { marginTop: 10 },
+  label:  { color: color.textSecondary, fontSize: 12 },
+  slider: { width: "100%", marginTop: 4, accentColor: color.purple },
+  hint:   { color: color.textMuted, fontSize: 11, marginTop: 10, lineHeight: 1.5 },
+};
+
+const mobilePanel = {
+  panel:  { ...basePanel, bottom: 12, left: 12, right: 12, padding: "8px 10px", fontSize: 12 },
+  title:  { fontWeight: 700, fontSize: 12, color: color.textPrimary, paddingBottom: 6, borderBottom: `1px solid ${color.borderSubtle}` },
+  field:  { marginTop: 8 },
+  label:  { color: color.textSecondary, fontSize: 11 },
+  slider: { width: "100%", marginTop: 3, accentColor: color.purple },
+  hint:   { color: color.textMuted, fontSize: 10, marginTop: 8, lineHeight: 1.45 },
 };
 
 /**
@@ -188,6 +199,8 @@ function MandelbulbFullscreen({ power, bailout, maxIterCap }) {
 export default function Mandelbulb() {
   const [power, setPower] = useState(8);
   const [bailout, setBailout] = useState(4);
+  const isMobile = useIsMobile();
+  const s = isMobile ? mobilePanel : desktopPanel;
 
   return (
     <ControlPanel
@@ -198,13 +211,13 @@ export default function Mandelbulb() {
     >
       {({ currentDepth }) => (
         <>
-          <div style={extraPanelStyle}>
-            <div style={{ fontWeight: 700 }}>Mandelbulb (Raymarch)</div>
+          <div style={s.panel}>
+            <div style={s.title}>Mandelbulb (Raymarch)</div>
 
-            <div style={{ marginTop: 8 }}>
-              べき乗の指数: {power}
+            <div style={s.field}>
+              <div style={s.label}>べき乗の指数: {power}</div>
               <input
-                style={sliderStyle}
+                style={s.slider}
                 type="range"
                 min="2"
                 max="12"
@@ -214,10 +227,10 @@ export default function Mandelbulb() {
               />
             </div>
 
-            <div style={{ marginTop: 8 }}>
-              広がりの限界: {bailout.toFixed(1)}
+            <div style={s.field}>
+              <div style={s.label}>広がりの限界: {bailout.toFixed(1)}</div>
               <input
-                style={sliderStyle}
+                style={s.slider}
                 type="range"
                 min="2"
                 max="12"
@@ -227,8 +240,10 @@ export default function Mandelbulb() {
               />
             </div>
 
-            <div style={{ opacity: 0.85, marginTop: 8 }}>
-              左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム / クリック: 成長リセット
+            <div style={s.hint}>
+              {isMobile
+                ? "1本指ドラッグ: 回転 / タップ: 成長リセット"
+                : "左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム / クリック: 成長リセット"}
             </div>
           </div>
 
