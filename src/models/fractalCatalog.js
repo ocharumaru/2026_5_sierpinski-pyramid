@@ -11,6 +11,7 @@ export const fractalCatalog = [
   {
     path: 'sierpinski',
     name: 'シェルピンスキー四面体',
+    bgColor: '#afcac7dc',
     image: '/images/sierpinski.png',
     intro: {
       beginner: {
@@ -103,6 +104,7 @@ $$f_i(x) = \frac{1}{2}(x - v_i) + v_i = \frac{1}{2}x + \frac{1}{2}v_i$$
   {
     path: 'menger',
     name: 'メンガースポンジ',
+    bgColor: '#e1d6a4da',
     image: '/images/menger.png',
     intro: {
       beginner: {
@@ -236,6 +238,7 @@ $$M = \bigcup_{i=1}^{20} f_i(M)$$
   {
     path: 'mandelbulb',
     name: 'マンデルバルブ',
+    bgColor: '#242020ad',
     image: '/images/mandelbulb.png',
     intro: {
       beginner: {
@@ -255,6 +258,8 @@ $$M = \bigcup_{i=1}^{20} f_i(M)$$
   {
     path: 'hilbert',
     name: '3次元ヒルベルト曲線',
+    bgColor: '#55035852',
+    image: '/images/hilbert.png',
     intro: {
       beginner: {
         overview: String.raw``,
@@ -273,6 +278,8 @@ $$M = \bigcup_{i=1}^{20} f_i(M)$$
   {
     path: 'koch',
     name: 'コッホ曲線',
+    bgColor: '#a0efbe5e',
+    image: '/images/koch.png',
     intro: {
       beginner: {
         overview: String.raw`

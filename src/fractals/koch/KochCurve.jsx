@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 
 /* =========================
    コッホ曲線 生成ロジック
@@ -78,10 +79,11 @@ function KochLine({ depth }) {
  * コッホ曲線の完全なシーン。
  */
 export default function KochCurve() {
+  const model=getFractalCatalogByPath('koch')
   return (
     <ControlPanel maxDepth={7} defaultDepth={5} defaultInterval={400} enableWireframe={false}>
       {({ currentDepth }) => (
-        <FractalScene>
+        <FractalScene background={model.bgColor ?? '#292f38'}>
           <KochLine depth={currentDepth} />
         </FractalScene>
       )}

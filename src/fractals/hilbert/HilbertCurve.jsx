@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 
 /* =========================
    3次元ヒルベルト曲線 生成ロジック
@@ -96,10 +97,11 @@ function HilbertLine({ depth }) {
  * 3次元ヒルベルト曲線の完全なシーン。
  */
 export default function HilbertCurve() {
+  const model=getFractalCatalogByPath('hilbert')
   return (
     <ControlPanel maxDepth={6} defaultDepth={4} defaultInterval={600} enableWireframe={false}>
       {({ currentDepth }) => (
-        <FractalScene>
+        <FractalScene background={model.bgColor ?? '#292f38'}>
           <HilbertLine depth={currentDepth} />
         </FractalScene>
       )}

@@ -135,7 +135,7 @@ export default function ModelIntroPage() {
 
   const imgAreaStyle = {
     width: '100%',
-    height: 200,
+    height: 220,
     borderRadius: shape.radiusSm,
     border: `1px dashed ${color.borderDefault}`,
     background: 'rgba(255, 255, 255, 0.02)',

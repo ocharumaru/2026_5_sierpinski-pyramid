@@ -143,7 +143,7 @@ export default function ControlPanel({
             style={{
               ...s.button,
               background: isPlaying ? color.cpInput : color.teal,
-              color: isPlaying ? color.cpText : color.cpTextin,
+              color: isPlaying ? color.cpTextin : color.cpTextin,
               border: isPlaying ? `1px solid ${color.cpBorder}` : "none",
             }}
           >

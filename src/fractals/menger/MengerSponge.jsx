@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { useCreateGeometry } from "../../hooks/useCreateGeometry";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 
 /* =========================
    メンガースポンジ生成ロジック
@@ -123,10 +124,11 @@ function MengerMesh({ depth, wireframe }) {
  * メンガースポンジの完全なシーン。
  */
 export default function MengerSponge() {
+  const model=getFractalCatalogByPath('menger')
   return (
     <ControlPanel maxDepth={4} defaultDepth={4} defaultInterval={600}>
       {({ currentDepth, wireframe }) => (
-        <FractalScene>
+        <FractalScene background={model.bgColor ?? '#292f38'}>
           <MengerMesh depth={currentDepth} wireframe={wireframe} />
         </FractalScene>
       )}

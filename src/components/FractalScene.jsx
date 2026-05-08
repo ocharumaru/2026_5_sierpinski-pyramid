@@ -8,10 +8,10 @@ import { OrbitControls } from "@react-three/drei";
  *
  * @param {{ children: React.ReactNode }} props
  */
-export default function FractalScene({ children }) {
+export default function FractalScene({ children, background = "#292f38" }) {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={{ position: [3, 3, 3], fov: 50 }}>
+      <Canvas camera={{ position: [3, 3, 3], fov: 50 }} style={{background}}>
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
         {children}

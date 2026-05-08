@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { useCreateGeometry } from "../../hooks/useCreateGeometry";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 
 /* =========================
    シェルピンスキー生成ロジック
@@ -122,10 +123,11 @@ function SierpinskiMesh({ depth, wireframe }) {
  * シェルピンスキー四面体の完全なシーン。
  */
 export default function SierpinskiPyramid() {
+  const model=getFractalCatalogByPath('sierpinski')
   return (
     <ControlPanel maxDepth={8} defaultDepth={6} defaultInterval={450}>
       {({ currentDepth, wireframe }) => (
-        <FractalScene>
+        <FractalScene  background={model.bgColor ?? '#292f38'}>
           <SierpinskiMesh depth={currentDepth} wireframe={wireframe} />
         </FractalScene>
       )}

@@ -52,11 +52,12 @@ const colorDark = {
 
   cpInput:       'rgba(30, 29, 33, 0.6)',
   cpOverlay:     'rgba(0, 0, 0, 0.8)',
-  cpText:        'rgba(235, 236, 251, 0.86)',
-  cpTextin:      'rgba(209, 224, 245, 0.84)',
+  cpText:        'rgba(217, 230, 240, 0.82)',
+  cpTextin:      'rgb(255, 255, 255)',
   cpBorder:      'rgba(0, 0, 0, 0.68)',
   cpSubtle:      'rgba(228, 230, 251, 0.8)',
   cpResume:      '#fafa12d6',
+  cpInbg:        'rgba(137, 146, 161, 0.84)',
 
   purple:        '#00ffe0',
   purpleLight:   '#80fff0',
@@ -280,7 +281,7 @@ function buildPageStyles(color, shape, isDark) {
     },
 
     thumbnail: {
-      height: 96,
+      height: 196,
       border: `1px dashed ${color.borderDefault}`,
       borderRadius: shape.radiusSm,
       display: 'flex',

@@ -8,13 +8,13 @@ export default function LDToggle() {
 
   //トグルの枠のスタイル
   const labelStyle = {
-    position: 'relative',
+    position: 'absolute',
     top: '30px',
-    left: '330px',
+    right: '50px',
     width: '50px',
     height: '22.5px',
     display: 'block',
-    background: isDark ? color.bgPanelHover : color.borderDefault,
+    background: isDark ? color.cpInbg : color.borderDefault,
     borderRadius: '12.5px',
     cursor: 'pointer',
     boxShadow: 'inset 0px 0.625px 1.85px rgba(0,0,0,0.3), inset 0px -0.625px 1.85px rgba(255,255,255,0.3)',
@@ -32,7 +32,7 @@ export default function LDToggle() {
     left: isDark ? '48.75px' : '1.25px',
     transform: isDark ? 'translateX(-100%)' : 'translateX(0)',
     background: isDark 
-      ? `linear-gradient(180deg, ${color.purpleLight}, ${color.purple})` 
+      ? `linear-gradient(180deg, ${color.bgPanel}, ${color.bgPage})` 
       : '#f2f2f2',
     transition: '0.5s',
     boxShadow: '0 1.25px 2.5px rgba(0,0,0,0.2)',
