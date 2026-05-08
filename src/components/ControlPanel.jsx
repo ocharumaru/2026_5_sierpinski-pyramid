@@ -184,7 +184,7 @@ export default function ControlPanel({
       </div>
 
       {/* render prop でMeshを描画 */}
-      {children({ currentDepth })}
+      {children({ currentDepth, stepInterval })}
     </>
   );
 }
