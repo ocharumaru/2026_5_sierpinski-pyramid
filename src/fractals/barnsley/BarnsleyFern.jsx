@@ -82,9 +82,31 @@ function paramsToTransforms(params) {
 const SCALE = 0.18;
 const Y_OFFSET = -0.9;
 
+// シード固定により depth が増えても先頭部分の点列が変わらないようにする
+// （= 既存の点はそのままに、続きの点だけが追加される動作になる）。
+const RNG_SEED = 0x9e3779b1;
+
+/**
+ * mulberry32 — 高速・軽量な決定論的 PRNG。返される関数は [0, 1) の乱数を返す。
+ *
+ * @param {number} seed
+ * @returns {() => number}
+ */
+function mulberry32(seed) {
+  let t = seed >>> 0;
+  return function () {
+    t = (t + 0x6d2b79f5) >>> 0;
+    let r = t;
+    r = Math.imul(r ^ (r >>> 15), r | 1);
+    r ^= r + Math.imul(r ^ (r >>> 7), r | 61);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 /**
  * カオスゲームによりバーンズリーのシダの点群を生成する。
  * 反復回数は depth から指数的に決まる（100 × 4^depth 点）。
+ * 乱数列はシード固定なので、depth を増やすと既存点はそのまま、続きが追加される。
  *
  * @param {number} depth - フラクタルの深さ（反復回数の指数）
  * @param {{p:number,a:number,b:number,c:number,d:number,e:number,f:number}[]} transforms
@@ -95,12 +117,13 @@ function generatePositions(depth, transforms) {
 
   const pointCount = Math.floor(100 * Math.pow(4, depth));
   const positions = new Float32Array(pointCount * 3);
+  const rand = mulberry32(RNG_SEED);
 
   let x = 0;
   let y = 0;
 
   for (let i = 0; i < pointCount; i++) {
-    const r = Math.random() * totalP;
+    const r = rand() * totalP;
     let cum = 0;
     let chosen = transforms[transforms.length - 1];
     for (const tr of transforms) {
