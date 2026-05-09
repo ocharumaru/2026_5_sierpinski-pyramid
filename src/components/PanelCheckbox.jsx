@@ -17,9 +17,9 @@ export default function PanelCheckbox({ label, checked, onChange }) {
   const [hover, setHover] = useState(false);
 
   const borderColor = checked
-    ? color.purple
+    ? color.accent1
     : hover
-      ? color.purpleLight
+      ? color.accent1Light
       : color.borderDefault;
 
   return (
@@ -64,7 +64,7 @@ export default function PanelCheckbox({ label, checked, onChange }) {
             height: BOX_SIZE,
             borderRadius: 4,
             border: `1px solid ${borderColor}`,
-            background: checked ? color.purple : color.bgPanel,
+            background: checked ? color.accent1 : color.bgPanel,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",

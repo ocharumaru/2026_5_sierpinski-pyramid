@@ -59,13 +59,11 @@ const colorDark = {
   cpResume:      '#fafa12d6',
   cpInbg:        'rgba(137, 146, 161, 0.84)',
 
-  purple:        '#00ffe0',
-  purpleLight:   '#80fff0',
-  purpleDim:     'rgba(0, 255, 200, 0.15)',
-  teal:          '#037527',
-  tealDim:       'rgba(0, 229, 176, 0.15)',
-  amber:         '#00ffe0',
-  amberDim:      'rgba(0, 255, 200, 0.12)',
+  accent1:       '#00ffe0',
+  accent1Light:  '#80fff0',
+  accent1Dim:    'rgba(0, 255, 200, 0.15)',
+  accent2:       '#ff6ad5',
+  accent2Dim:    'rgba(255, 106, 213, 0.15)',
 }
 
 const colorLight = {
@@ -89,13 +87,11 @@ const colorLight = {
   cpSubtle:      'rgba(44, 36, 30, 0.8)',
   cpResume:      '#efec22',
 
-  purple:        '#c0583a',
-  purpleLight:   '#d98060',
-  purpleDim:     'rgba(192, 88, 58, 0.12)',
-  teal:          '#5cf1ae',
-  tealDim:       'rgba(139, 115, 85, 0.12)',
-  amber:         '#c0583a',
-  amberDim:      'rgba(225, 91, 54, 0.10)',
+  accent1:       '#c0583a',
+  accent1Light:  '#d98060',
+  accent1Dim:    'rgba(192, 88, 58, 0.12)',
+  accent2:       '#3a7d8c',
+  accent2Dim:    'rgba(58, 125, 140, 0.12)',
 }
 
 // ── shapeトークン定義 ─────────────────────────────────────────
@@ -194,7 +190,7 @@ function buildPageStyles(color, shape, isDark) {
 
     primaryButton: {
       border: 'none',
-      background: color.purple,
+      background: color.accent1,
       color: isDark ? '#001a14' : '#fff',
       borderRadius: shape.radiusSm,
       fontWeight: 700,
@@ -218,11 +214,11 @@ function buildPageStyles(color, shape, isDark) {
       display: 'inline-block',
       width: 'fit-content',
       textDecoration: 'none',
-      color: color.purple,
+      color: color.accent1,
       fontWeight: 700,
       borderRadius: shape.radiusSm,
       padding: '10px 18px',
-      border: `1px solid ${isDark ? color.purple : color.purpleLight}`,
+      border: `1px solid ${isDark ? color.accent1 : color.accent1Light}`,
     },
 
     backLink: {
@@ -262,15 +258,15 @@ function buildPageStyles(color, shape, isDark) {
     },
 
     cardHover: {
-      border: `1px solid ${color.purple}`,
+      border: `1px solid ${color.accent1}`,
       ...(isDark
         ? { background: color.bgPanelHover }
         : { boxShadow: '0 3px 12px rgba(192,88,58,0.14)' }),
     },
 
     cardSelected: {
-      border: `2px solid ${color.purple}`,
-      background: color.purpleDim,
+      border: `2px solid ${color.accent1}`,
+      background: color.accent1Dim,
     },
 
     cardTitle: {
@@ -288,7 +284,7 @@ function buildPageStyles(color, shape, isDark) {
       justifyContent: 'center',
       alignItems: 'center',
       color: color.textMuted,
-      background: color.purpleDim,
+      background: color.accent1Dim,
     },
 
     tabRow: {
@@ -325,9 +321,9 @@ function buildPageStyles(color, shape, isDark) {
     },
 
     tabButtonActive: {
-      background: color.amber,
+      background: color.accent1,
       color: isDark ? '#001a14' : '#fff',
-      borderColor: color.amber,           // ← active 側も borderColor で統一
+      borderColor: color.accent1,           // ← active 側も borderColor で統一
       fontWeight: 700,
       top: 0,
       zIndex: 3,
@@ -360,8 +356,8 @@ function buildPageStyles(color, shape, isDark) {
       padding: '3px 8px',
       borderRadius: 4,
       fontWeight: 500,
-      background: color.purpleDim,
-      color: color.purple,
+      background: color.accent1Dim,
+      color: color.accent1,
     },
 
     badgeVisual: {
@@ -370,8 +366,8 @@ function buildPageStyles(color, shape, isDark) {
       padding: '3px 8px',
       borderRadius: 4,
       fontWeight: 500,
-      background: color.tealDim,
-      color: color.teal,
+      background: color.accent2Dim,
+      color: color.accent2,
     },
 
     badgeSoon: {

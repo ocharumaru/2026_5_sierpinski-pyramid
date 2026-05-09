@@ -63,12 +63,12 @@ export default function FernEditor({ params, onChange }) {
     resetBtn:     { background: "rgba(220, 60, 80, 0.85)", color: "#fff", border: "none", borderRadius: shape.radiusSm, padding: "4px 9px", fontSize: 11, cursor: "pointer" },
     presetRow:    { display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 12 },
     presetBtn:    { background: color.bgPanel, color: color.textSecondary, border: `1px solid ${color.borderDefault}`, borderRadius: shape.radiusSm, padding: "3px 8px", fontSize: 11, cursor: "pointer" },
-    presetBtnOn:  { background: color.purple, color: "#fff", border: "none" },
+    presetBtnOn:  { background: color.accent1, color: "#fff", border: "none" },
     field:        { marginBottom: 9 },
     labelRow:     { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 },
     label:        { color: color.textSecondary, fontSize: 11 },
     value:        { color: color.textPrimary, fontSize: 11 },
-    slider:       { width: "100%", accentColor: color.purple },
+    slider:       { width: "100%", accentColor: color.accent1 },
   };
 
   const mobilePanel = {

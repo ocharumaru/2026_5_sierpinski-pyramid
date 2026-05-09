@@ -30,7 +30,7 @@ export default function FrontPage() {
     fontSize: 12,
     fontWeight: 500,
     letterSpacing: '0.1em',
-    color: color.purple,
+    color: color.accent1,
     textTransform: 'uppercase',
   }
 

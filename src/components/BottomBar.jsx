@@ -45,7 +45,7 @@ export default function BottomBar({ step, nextLabel, onNext, backLabel, onBack }
   const primaryBtnStyle = {
     flex: 1,
     border: 'none',
-    background: color.purple,
+    background: color.accent1,
     color: color.textBar,
     borderRadius: shape.radiusSm,
     padding: '11px 0',

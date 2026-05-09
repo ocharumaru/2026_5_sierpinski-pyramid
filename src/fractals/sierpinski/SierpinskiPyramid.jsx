@@ -4,7 +4,10 @@ import { useCreateGeometry } from "../../hooks/useCreateGeometry";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
 import PanelCheckbox from "../../components/PanelCheckbox";
+import { useTheme } from "../../styles/pageStyles";
 import { getFractalCatalogByPath } from "../../models/fractalCatalog";
+
+const MODEL = getFractalCatalogByPath("sierpinski");
 
 /* =========================
    シェルピンスキー生成ロジック
@@ -106,12 +109,12 @@ function generateVertices(depth) {
  *
  * @param {{ depth: number, wireframe: boolean }} props
  */
-function SierpinskiMesh({ depth, wireframe }) {
+function SierpinskiMesh({ depth, wireframe, color }) {
   const geometry = useCreateGeometry(generateVertices, depth);
   return (
     <mesh geometry={geometry}>
       <meshStandardMaterial
-        color="#4fd1ff"
+        color={color}
         roughness={0.35}
         metalness={0.1}
         side={THREE.DoubleSide}
@@ -125,8 +128,9 @@ function SierpinskiMesh({ depth, wireframe }) {
  * シェルピンスキー四面体の完全なシーン。
  */
 export default function SierpinskiPyramid() {
-  const model=getFractalCatalogByPath('sierpinski')
+  const { theme } = useTheme();
   const [wireframe, setWireframe] = useState(false);
+  const meshColor = MODEL.meshColor[theme];
 
   return (
     <ControlPanel
@@ -138,8 +142,8 @@ export default function SierpinskiPyramid() {
       }
     >
       {({ currentDepth }) => (
-        <FractalScene  background={model.bgColor ?? '#292f38'}>
-          <SierpinskiMesh depth={currentDepth} wireframe={wireframe} />
+        <FractalScene>
+          <SierpinskiMesh depth={currentDepth} wireframe={wireframe} color={meshColor} />
         </FractalScene>
       )}
     </ControlPanel>

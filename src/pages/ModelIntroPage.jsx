@@ -89,7 +89,7 @@ export default function ModelIntroPage() {
   const statValStyle = {
     fontSize: 16,
     fontWeight: 600,
-    color: color.purple,
+    color: color.accent1,
   }
 
   const statKeyStyle = {

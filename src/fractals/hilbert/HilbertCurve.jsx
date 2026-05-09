@@ -3,8 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import { Line } from "@react-three/drei";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
-import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 import PanelCheckbox from "../../components/PanelCheckbox";
+import { useTheme } from "../../styles/pageStyles";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
+
+const MODEL = getFractalCatalogByPath("hilbert");
 
 /* =========================
    3次元ヒルベルト曲線 生成ロジック
@@ -90,9 +93,9 @@ function generatePoints(depth) {
  *
  * @param {{ depth: number }} props
  */
-function HilbertLine({ depth }) {
+function HilbertLine({ depth, color }) {
   const points = useMemo(() => generatePoints(depth), [depth]);
-  return <Line points={points} color="#a78bfa" lineWidth={2} />;
+  return <Line points={points} color={color} lineWidth={2} />;
 }
 
 /**
@@ -103,7 +106,7 @@ function HilbertLine({ depth }) {
  *
  * @param {{ depth: number, stepInterval: number }} props
  */
-function HilbertLineTracking({ depth, stepInterval }) {
+function HilbertLineTracking({ depth, stepInterval, lineColor, headColor }) {
   const points = useMemo(() => generatePoints(depth), [depth]);
 
   const lineRef = useRef(null);
@@ -146,10 +149,10 @@ function HilbertLineTracking({ depth, stepInterval }) {
 
   return (
     <>
-      <Line ref={lineRef} points={points} color="#a78bfa" lineWidth={2} />
+      <Line ref={lineRef} points={points} color={lineColor} lineWidth={2} />
       <mesh ref={headRef}>
         <sphereGeometry args={[0.025, 12, 12]} />
-        <meshBasicMaterial color="#fde047" />
+        <meshBasicMaterial color={headColor} />
       </mesh>
     </>
   );
@@ -163,9 +166,11 @@ function HilbertLineTracking({ depth, stepInterval }) {
  * 3次元ヒルベルト曲線の完全なシーン。
  */
 export default function HilbertCurve() {
+  const { theme } = useTheme();
   const [tracking, setTracking] = useState(false);
+  const lineColor = MODEL.meshColor[theme];
+  const headColor = MODEL.meshAccentColor[theme];
 
-  const model=getFractalCatalogByPath('hilbert')
   return (
     <ControlPanel
       maxDepth={6}
@@ -176,10 +181,10 @@ export default function HilbertCurve() {
       }
     >
       {({ currentDepth, stepInterval }) => (
-        <FractalScene background={model.bgColor ?? '#292f38'}>
+        <FractalScene>
           {tracking
-            ? <HilbertLineTracking depth={currentDepth} stepInterval={stepInterval} />
-            : <HilbertLine depth={currentDepth} />}
+            ? <HilbertLineTracking depth={currentDepth} stepInterval={stepInterval} lineColor={lineColor} headColor={headColor} />
+            : <HilbertLine depth={currentDepth} color={lineColor} />}
         </FractalScene>
       )}
     </ControlPanel>

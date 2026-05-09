@@ -11,8 +11,8 @@ export const fractalCatalog = [
   {
     path: 'sierpinski',
     name: 'シェルピンスキー四面体',
-    bgColor: '#afcac7dc',
     image: '/images/sierpinski.png',
+    meshColor: { dark: '#4fd1ff', light: '#187caf' },
     intro: {
       beginner: {
         overview:  String.raw`
@@ -104,8 +104,8 @@ $$f_i(x) = \frac{1}{2}(x - v_i) + v_i = \frac{1}{2}x + \frac{1}{2}v_i$$
   {
     path: 'menger',
     name: 'メンガースポンジ',
-    bgColor: '#e1d6a4da',
     image: '/images/menger.png',
+    meshColor: { dark: '#e8a040', light: '#a96d18' },
     intro: {
       beginner: {
         overview: String.raw`
@@ -238,7 +238,6 @@ $$M = \bigcup_{i=1}^{20} f_i(M)$$
   {
     path: 'mandelbulb',
     name: 'マンデルバルブ',
-    bgColor: '#242020ad',
     image: '/images/mandelbulb.png',
     intro: {
       beginner: {
@@ -258,8 +257,9 @@ $$M = \bigcup_{i=1}^{20} f_i(M)$$
   {
     path: 'hilbert',
     name: '3次元ヒルベルト曲線',
-    bgColor: '#55035852',
     image: '/images/hilbert.png',
+    meshColor:       { dark: '#a78bfa', light: '#5333cc' },
+    meshAccentColor: { dark: '#fde047', light: '#a98712' },
     intro: {
       beginner: {
         overview: String.raw`
@@ -321,8 +321,8 @@ $n$ 回目の反復で $I^3$ を $8^n$ 個の部分立方体に分割し、そ�
   {
     path: 'koch',
     name: 'コッホ曲線',
-    bgColor: '#a0efbe5e',
     image: '/images/koch.png',
+    meshColor: { dark: '#00e5ff', light: '#00919e' },
     intro: {
       beginner: {
         overview: String.raw`
@@ -384,8 +384,9 @@ $f_4(z) = \frac{z}{3} + \frac{2}{3}$
   {
     path: 'barnsley',
     name: 'バーンズリーのシダ',
-    bgColor: '#f0f9fcd0',
     image: '/images/barnsley.png',
+    meshColor:       { dark: '#22c55e', light: '#1f7a44' },
+    meshAccentColor: { dark: '#fde047', light: '#a98712' },
     intro: {
       beginner: {
         overview: String.raw`

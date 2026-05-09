@@ -157,7 +157,7 @@ export default function ControlPanel({
                 disabled={isPlaying}
                 style={{
                   ...s.button,
-                  background: isPlaying ? color.cpInput : color.teal,
+                  background: isPlaying ? color.cpInput : color.accent2,
                   color: isPlaying ? color.cpTextin : color.cpTextin,
                   border: isPlaying ? `1px solid ${color.cpBorder}` : "none",
                 }}

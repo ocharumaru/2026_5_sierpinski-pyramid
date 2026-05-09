@@ -84,7 +84,7 @@ export default function Mandelbulb() {
     title:  { fontWeight: 700, fontSize: 13, color: color.cpText, paddingBottom: 8, borderBottom: `1px solid ${color.cpSubtle}` },
     field:  { marginTop: 10 },
     label:  { color: color.cpText, fontSize: 12 },
-    slider: { width: "100%", marginTop: 4, accentColor: color.purple },
+    slider: { width: "100%", marginTop: 4, accentColor: color.accent1 },
     hint:   { color: color.cpText, fontSize: 11, marginTop: 10, lineHeight: 1.5 },
   };
 
@@ -93,7 +93,7 @@ export default function Mandelbulb() {
     title:  { fontWeight: 700, fontSize: 12, color: color.cpText, paddingBottom: 6, borderBottom: `1px solid ${color.cpSubtle}` },
     field:  { marginTop: 8 },
     label:  { color: color.cpText, fontSize: 11 },
-    slider: { width: "100%", marginTop: 3, accentColor: color.purple },
+    slider: { width: "100%", marginTop: 3, accentColor: color.accent1 },
     hint:   { color: color.cpText, fontSize: 10, marginTop: 8, lineHeight: 1.45 },
   };
 

@@ -22,7 +22,7 @@ export default function ProgressBar({ step }) {
           key={n}
           style={{
             ...segStyle,
-            background: n <= step ? color.purple : 'rgba(255, 255, 255, 0.10)',
+            background: n <= step ? color.accent1 : 'rgba(255, 255, 255, 0.10)',
           }}
         />
       ))}
