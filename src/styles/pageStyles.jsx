@@ -69,7 +69,6 @@ const colorDark = {
   accent2:       '#0cf7c8',
   accent2Dim:    'rgba(255, 106, 213, 0.15)',
 
-  bgGenepage:    '#13135c45',
   bgPanelStrong: 'rgba(0, 255, 200, 0.04)',
   bgPanelWide:   'rgba(0, 255, 200, 0.04)',
   bgInfo:        'rgba(0, 255, 200, 0.04)',
@@ -108,7 +107,6 @@ const colorLight = {
   accent2:       '#0fca41',
   accent2Dim:    'rgba(58, 125, 140, 0.12)',
 
-  bgGenepage:    '#ecd8b7',
   bgPanelStrong: '#fff9f4',
   bgPanelWide:   '#f8f7e9d2',
   bgInfo:        '#fcecdf',
