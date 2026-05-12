@@ -116,8 +116,10 @@ function MengerMesh({ depth, wireframe, color }) {
     <mesh geometry={geometry}>
       <meshStandardMaterial
         color={color}
-        roughness={0.35}
-        metalness={0.1}
+        roughness={1.0}
+        metalness={0}
+        emissive={color}
+        emissiveIntensity={0.35}
         side={THREE.DoubleSide}
         wireframe={wireframe}
       />
@@ -143,7 +145,7 @@ export default function MengerSponge() {
       }
     >
       {({ currentDepth }) => (
-        <FractalScene>
+        <FractalScene cameraPosition={[4, 4, 4]}>
           <MengerMesh depth={currentDepth} wireframe={wireframe} color={meshColor} />
         </FractalScene>
       )}

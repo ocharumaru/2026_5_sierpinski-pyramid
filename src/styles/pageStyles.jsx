@@ -66,7 +66,7 @@ const colorDark = {
   accent1Light:  '#80fff0',
   accent1Dim:    'rgba(0, 255, 200, 0.15)',
   accent1Text:   '#001a14',
-  accent2:       '#ff6ad5',
+  accent2:       '#0cf7c8',
   accent2Dim:    'rgba(255, 106, 213, 0.15)',
 
   bgPanelStrong: 'rgba(0, 255, 200, 0.04)',
@@ -95,16 +95,16 @@ const colorLight = {
   cpTextin:      '#ffffff',
   cpBorder:      'rgba(241, 234, 211, 0.68)',
   cpSubtle:      'rgba(44, 36, 30, 0.8)',
-  cpResume:      '#a98712',
+  cpResume:      '#edd732',
   cpResumeText:  '#ffffff',
-  cpReset:       '#b91c1c',
+  cpReset:       '#f5032c',
   cpResetText:   '#ffffff',
 
-  accent1:       '#c0583a',
+  accent1:       '#d74b25',
   accent1Light:  '#d98060',
   accent1Dim:    'rgba(192, 88, 58, 0.12)',
   accent1Text:   '#ffffff',
-  accent2:       '#3a7d8c',
+  accent2:       '#0fca41',
   accent2Dim:    'rgba(58, 125, 140, 0.12)',
 
   bgPanelStrong: '#fff9f4',
@@ -209,7 +209,7 @@ function buildPageStyles(color, shape, isDark) {
 
     primaryButton: {
       border: 'none',
-      background: color.accent1,
+      background: color.accent2,
       color: color.accent1Text,
       borderRadius: shape.radiusSm,
       fontWeight: 700,

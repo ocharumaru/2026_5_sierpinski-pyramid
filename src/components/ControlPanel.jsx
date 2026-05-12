@@ -125,7 +125,7 @@ export default function ControlPanel({
           <>
             {/* パラメータ入力 */}
             <div style={{ ...s.row, marginTop: isMobile ? 8 : 10 }}>
-              <span style={s.label}>目標深さ（depth）</span>
+              <span style={s.label}>ステップ数（depth）</span>
               <input
                 type="number"
                 min={0}
@@ -197,13 +197,15 @@ export default function ControlPanel({
               </button>
             </div>
 
-            {/* 図形固有の追加UI（任意） */}
-            {extraControls}
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
+              {/* 図形固有の追加UI（任意） */}
+              {extraControls}
 
-            <div style={{ marginTop: isMobile ? 8 : 10 }}>
-              <Link to="/models" style={s.link}>
-                図形選択に戻る
-              </Link>
+              <div style={{ marginTop: isMobile ? 8 : 10 }}>
+                <Link to="/models" style={s.link}>
+                  図形選択に戻る
+                </Link>
+              </div>
             </div>
           </>
         )}
