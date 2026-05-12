@@ -12,6 +12,7 @@ import { fractalCatalog } from '../models/fractalCatalog'
 const componentsByPath = {
   sierpinski: lazy(() => import('./sierpinski/SierpinskiPyramid')),
   menger: lazy(() => import('./menger/MengerSponge')),
+  mandelbrot: lazy(() => import('./mandelbrot/MandelbrotSet')),
   mandelbulb: lazy(() => import('./mandelbulb/Mandelbulb')),
   koch: lazy(() => import('./koch/KochCurve')),
   hilbert: lazy(() => import('./hilbert/HilbertCurve')),
