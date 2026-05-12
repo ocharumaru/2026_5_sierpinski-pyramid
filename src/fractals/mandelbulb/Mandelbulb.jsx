@@ -135,24 +135,24 @@ export default function Mandelbulb() {
             
             {!isMinimized && (
               <>
-            <div style={s.field}>
+                <div style={s.field}>
                   <div style={s.label}>べき乗の指数: {power} <span style={{fontSize: '0.9em'}}>（花弁の数などが変わる）</span></div>
-              <input
-                style={s.slider}
-                type="range"
-                min="2"
-                max="12"
-                step="1"
-                value={power}
-                onChange={(e) => setPower(parseInt(e.target.value, 10))}
-              />
-            </div>
+                  <input
+                    style={s.slider}
+                    type="range"
+                    min="2"
+                    max="12"
+                    step="1"
+                    value={power}
+                    onChange={(e) => setPower(parseInt(e.target.value, 10))}
+                  />
+                </div>
 
-            <div style={s.hint}>
-              {isMobile
-                ? "1本指: 回転 / 2本指: ピンチで拡大・ドラッグで移動"
-                : "左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム"}
-            </div>
+                <div style={s.hint}>
+                  {isMobile
+                    ? "1本指: 回転 / 2本指: ピンチで拡大・ドラッグで移動"
+                    : "左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム"}
+                </div>  
               </>
             )}
           </div>
