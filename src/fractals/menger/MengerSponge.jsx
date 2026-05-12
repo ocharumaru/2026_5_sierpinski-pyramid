@@ -116,10 +116,8 @@ function MengerMesh({ depth, wireframe, color }) {
     <mesh geometry={geometry}>
       <meshStandardMaterial
         color={color}
-        roughness={1.0}
-        metalness={0}
-        emissive={color}
-        emissiveIntensity={0.35}
+        roughness={0.35}
+        metalness={0.1}
         side={THREE.DoubleSide}
         wireframe={wireframe}
       />
