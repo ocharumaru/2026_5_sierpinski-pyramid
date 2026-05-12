@@ -19,6 +19,8 @@ varying vec2 vCoord;
 
 uniform float uMaxIterF;
 uniform float uBailout;
+uniform vec3 uInsideColor;
+uniform vec3 uAccentColor;
 
 // 反復回数の上限。ControlPanel の maxDepth と合わせる。
 const int MAX_ITER_CONST = 360;
@@ -48,7 +50,7 @@ vec3 sampleColor(vec2 c) {
   }
 
   if (!escaped) {
-    return vec3(5.0 / 255.0, 7.0 / 255.0, 20.0 / 255.0);
+    return uInsideColor;
   }
 
   float smoothIter = iter + 1.0 - log2(max(1.0, log2(max(radius, 1.0001))));
@@ -56,11 +58,9 @@ vec3 sampleColor(vec2 c) {
   float glow = pow(t, 0.58);
   float band = 0.5 + 0.5 * sin(18.0 * t + uBailout * 0.75);
 
-  return vec3(
-    (1.0 + 42.0 * glow + 96.0 * glow * band) / 255.0,
-    (1.0 + 68.0 * glow + 120.0 * pow(t, 1.15) * (1.0 - band * 0.25)) / 255.0,
-    (30.0 + 72.0 * glow + 96.0 * glow * band) / 255.0
-  );
+  // インサイド色 → アクセント色 のグラデーションを、glow と band で変調。
+  float intensity = clamp(glow * (0.55 + 0.45 * band), 0.0, 1.0);
+  return mix(uInsideColor, uAccentColor, intensity);
 }
 
 void main() {

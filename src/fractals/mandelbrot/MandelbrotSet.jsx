@@ -2,18 +2,22 @@ import { useRef, useState } from "react";
 import ControlPanel from "../../components/ControlPanel";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useTheme } from "../../styles/pageStyles";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 import MandelbrotCanvas from "./MandelbrotCanvas";
 import MandelbrotControls from "./MandelbrotControls";
 import { INITIAL_MANDELBROT_VIEW } from "./mandelbrotMath";
 
+const MODEL = getFractalCatalogByPath("mandelbrot");
 const ZOOM_STEP = 1.333;
 const MAX_VIEW_WIDTH = 8;
 const MIN_VIEW_WIDTH = 0.0008;
 
 export default function MandelbrotSet() {
-  const { color } = useTheme();
+  const { color, theme } = useTheme();
   const isMobile = useIsMobile();
   const [bailout, setBailout] = useState(2);
+  const insideColor = MODEL.meshColor[theme];
+  const accentColor = MODEL.meshAccentColor[theme];
 
   const cameraRef = useRef(null);
   const controlsRef = useRef(null);
@@ -80,6 +84,8 @@ export default function MandelbrotSet() {
             bailout={bailout}
             isMobile={isMobile}
             background={color.bgPage}
+            insideColor={insideColor}
+            accentColor={accentColor}
             cameraRef={cameraRef}
             controlsRef={controlsRef}
             canvasSizeRef={canvasSizeRef}

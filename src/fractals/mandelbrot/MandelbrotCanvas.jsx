@@ -9,13 +9,15 @@ import { INITIAL_MANDELBROT_VIEW } from "./mandelbrotMath";
 // 頂点数は4のままなので大きくしても描画コストは増えない。
 const PLANE_SIZE = 1000;
 
-function MandelbrotMesh({ maxIter, bailout }) {
+function MandelbrotMesh({ maxIter, bailout, insideColor, accentColor }) {
   const matRef = useRef(null);
 
   const uniforms = useMemo(
     () => ({
       uMaxIterF: { value: 1.0 },
       uBailout: { value: 2.0 },
+      uInsideColor: { value: new THREE.Color("#000000") },
+      uAccentColor: { value: new THREE.Color("#ffffff") },
     }),
     []
   );
@@ -24,7 +26,9 @@ function MandelbrotMesh({ maxIter, bailout }) {
     if (!matRef.current) return;
     matRef.current.uniforms.uMaxIterF.value = Math.max(1, maxIter);
     matRef.current.uniforms.uBailout.value = bailout;
-  }, [maxIter, bailout]);
+    matRef.current.uniforms.uInsideColor.value.set(insideColor);
+    matRef.current.uniforms.uAccentColor.value.set(accentColor);
+  }, [maxIter, bailout, insideColor, accentColor]);
 
   return (
     <mesh>
@@ -72,6 +76,8 @@ export default function MandelbrotCanvas({
   bailout,
   isMobile,
   background,
+  insideColor,
+  accentColor,
   cameraRef,
   controlsRef,
   canvasSizeRef,
@@ -98,7 +104,12 @@ export default function MandelbrotCanvas({
       dpr={[1, isMobile ? 1.25 : 2]}
     >
       <Setup cameraRef={cameraRef} canvasSizeRef={canvasSizeRef} />
-      <MandelbrotMesh maxIter={maxIter} bailout={bailout} />
+      <MandelbrotMesh
+        maxIter={maxIter}
+        bailout={bailout}
+        insideColor={insideColor}
+        accentColor={accentColor}
+      />
       <OrbitControls
         ref={controlsRef}
         target={[

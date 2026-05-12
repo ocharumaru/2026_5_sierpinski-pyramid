@@ -238,6 +238,8 @@ $$M = \bigcup_{i=1}^{20} f_i(M)$$
   {
     path: 'mandelbrot',
     name: 'マンデルブロ集合',
+    meshColor:       { dark: '#06112c', light: '#0a1230' },
+    meshAccentColor: { dark: '#9ad0e6', light: '#3a7a9e' },
     intro: {
       beginner: {
         overview: String.raw`
