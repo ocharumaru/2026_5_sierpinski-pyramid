@@ -13,7 +13,7 @@ import { useTheme } from "../styles/pageStyles";
 export default function FractalScene({ children, cameraPosition = [3, 3, 3] }) {
   const { color } = useTheme();
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div style={{ width: "100vw", height: "100dvh" }}>
       <Canvas camera={{ position: cameraPosition, fov: 50 }} style={{ background: color.bgPage }}>
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 5, 5]} intensity={1} />

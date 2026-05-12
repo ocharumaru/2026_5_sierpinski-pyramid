@@ -17,7 +17,7 @@ export default function FrontPage() {
   // ── スタイル定数 (clor参照)─────────────────────────────────────────────
 
   const pageStyle = {
-    height: '100vh',      
+    height: '100dvh',      
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',

@@ -145,7 +145,7 @@ function buildPageStyles(color, shape, isDark) {
   return {
 
     page: {
-      minHeight: '100vh',
+      minHeight: '100dvh',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

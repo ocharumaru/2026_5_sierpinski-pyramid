@@ -41,7 +41,7 @@ export default function ModelSelectionPage() {
   // ── スタイル定数 (color参照)─────────────────────────────────────────────
 
   const pageStyle = {
-    height: '100vh',
+    height: '100dvh',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
