@@ -67,6 +67,7 @@ export default function Mandelbulb() {
   const [power, setPower] = useState(8);
   const [bailout, setBailout] = useState(4);
   const [shadow, setShadow] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const isMobile = useIsMobile();
 
   const basePanel = {
@@ -112,10 +113,30 @@ export default function Mandelbulb() {
       {({ currentDepth }) => (
         <>
           <div style={s.panel}>
-            <div style={s.title}>Mandelbulb (Raymarch)</div>
+            <div style={s.header}>
+              <span style={s.title}>Mandelbulb (Raymarch)</span>
 
+              <button
+                onClick={() => setIsMinimized((v) => !v)}
+                style={{
+                  background: 'transparent',
+                  border: `1px solid ${color.cpBorder}`,
+                  borderRadius: shape.radiusSm,
+                  color: color.cpText,
+                  cursor: 'pointer',
+                  fontSize: 11,
+                  padding: '2px 7px',
+                  lineHeight: 1,
+                }}
+              >
+                {isMinimized ? '▲' : '▼'}
+              </button>
+            </div>
+            
+            {!isMinimized && (
+              <>
             <div style={s.field}>
-              <div style={s.label}>べき乗の指数: {power}</div>
+                  <div style={s.label}>べき乗の指数: {power} <span style={{fontSize: '0.9em'}}>（花弁の数などが変わる）</span></div>
               <input
                 style={s.slider}
                 type="range"
@@ -127,30 +148,19 @@ export default function Mandelbulb() {
               />
             </div>
 
-            <div style={s.field}>
-              <div style={s.label}>広がりの限界: {bailout.toFixed(1)}</div>
-              <input
-                style={s.slider}
-                type="range"
-                min="2"
-                max="12"
-                step="0.1"
-                value={bailout}
-                onChange={(e) => setBailout(parseFloat(e.target.value))}
-              />
-            </div>
-
             <div style={s.hint}>
               {isMobile
                 ? "1本指: 回転 / 2本指: ピンチで拡大・ドラッグで移動"
                 : "左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム"}
             </div>
+              </>
+            )}
           </div>
 
           <Canvas
             style={{ width: "100vw", height: "100dvh", background: color.bgPage }}
             gl={{ alpha: true }}
-            camera={{ position: [0, 0, 3.0], fov: 50 }}
+            camera={{ position: [0, 0, 4.8], fov: 50 }}
             dpr={[1, isMobile ? 1.25 : 2]}
           >
             <MandelbulbBackground
@@ -162,7 +172,7 @@ export default function Mandelbulb() {
             <OrbitControls
               enableDamping
               minDistance={1.5}
-              maxDistance={20}
+              maxDistance={4.8}
             />
           </Canvas>
         </>

@@ -8,13 +8,13 @@ import { useTheme } from "../styles/pageStyles";
  * children に Mesh コンポーネントを渡して使う。
  * 背景色はテーマの bgPage に統一される（モデル別では持たない）。
  *
- * @param {{ children: React.ReactNode }} props
+ * @param {{ children: React.ReactNode, cameraPosition: [number, number, number] }} props
  */
-export default function FractalScene({ children }) {
+export default function FractalScene({ children, cameraPosition = [3, 3, 3] }) {
   const { color } = useTheme();
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={{ position: [3, 3, 3], fov: 50 }} style={{ background: color.bgPage }}>
+      <Canvas camera={{ position: cameraPosition, fov: 50 }} style={{ background: color.bgPage }}>
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
         {children}
