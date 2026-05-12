@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { fractalCatalog } from '../models/fractalCatalog'
 import { fractals } from '../fractals/index'
 import ProgressBar from '../components/ProgressBar'
-import { pageStyles, color, shape } from '../styles/pageStyles'
+import { useTheme } from '../styles/pageStyles'
+
 
 /**
  * モデル選択ページ（ステップ 2/4）
@@ -30,11 +31,43 @@ import { pageStyles, color, shape } from '../styles/pageStyles'
  * `image` が未設定のカードはプレースホルダー表示にフォールバックする。
  * 画像ファイルは `public/images/` フォルダに置くと Vite の設定なしで参照できる。
  */
+const availablePaths = new Set(fractals.map((f) => f.path))
+
 export default function ModelSelectionPage() {
   const navigate = useNavigate()
+  const { pageStyles, color, theme, toggleTheme } = useTheme()
   const [hoveredId, setHoveredId] = useState(null)
 
-  const availablePaths = new Set(fractals.map((f) => f.path))
+  // ── スタイル定数 (color参照)─────────────────────────────────────────────
+
+  const pageStyle = {
+    height: '100vh',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    background: color.bgPage,
+    color: color.textPrimary,
+    fontFamily: 'sans-serif',
+  }
+
+  const backLinkStyle = {
+    fontSize: 13,
+    color: color.textSecondary,
+    textDecoration: 'none',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+  }
+
+  const footerStyle = {
+    flexShrink: 0,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 16,
+    padding: '12px 24px 14px',
+    borderTop: `1px solid ${color.borderSubtle}`,
+    background: color.bgPage,
+  }
+  //─────────────────────────────────────────────
 
   return (
     <main style={pageStyle}>
@@ -92,35 +125,7 @@ export default function ModelSelectionPage() {
   )
 }
 
-// ── スタイル定数 ─────────────────────────────────────────────
-
-const pageStyle = {
-  height: '100vh',
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-  background: color.bgPage,
-  color: color.textPrimary,
-  fontFamily: 'sans-serif',
-}
-
-const footerStyle = {
-  flexShrink: 0,
-  display: 'flex',
-  alignItems: 'center',
-  gap: 16,
-  padding: '12px 24px 14px',
-  borderBottom: `1px solid rgba(255, 255, 255, 0.07)`,
-  background: color.bgPage,
-}
-
-const backLinkStyle = {
-  fontSize: 13,
-  color: color.textSecondary,
-  textDecoration: 'none',
-  whiteSpace: 'nowrap',
-  flexShrink: 0,
-}
+// ── スタイル定数 (color非参照)─────────────────────────────────────────────
 
 const progressWrapStyle = {
   flex: 1,
@@ -143,6 +148,7 @@ const disabledCardStyle = {
 // ── サムネイル（画像 or プレースホルダー）────────────────────
 
 function FractalThumb({ image, name }) {
+  const { color } = useTheme()
   if (image) {
     return (
       <img

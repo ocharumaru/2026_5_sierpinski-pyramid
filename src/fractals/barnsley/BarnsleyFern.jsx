@@ -6,6 +6,10 @@ import ControlPanel from "../../components/ControlPanel";
 import PanelCheckbox from "../../components/PanelCheckbox";
 import { DEFAULT_PARAMS, generatePositions, paramsToTransforms } from "./barnsleyMath";
 import FernEditor from "./FernEditor";
+import { useTheme } from "../../styles/pageStyles";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
+
+const MODEL = getFractalCatalogByPath("barnsley");
 
 /* =========================
    描画コンポーネント
@@ -22,7 +26,7 @@ import FernEditor from "./FernEditor";
  *
  * @param {{ depth: number, transforms: object[], tracking: boolean }} props
  */
-function BarnsleyFernPoints({ depth, transforms, tracking }) {
+function BarnsleyFernPoints({ depth, transforms, tracking, pointColor, headColor }) {
   const positions = useMemo(
     () => generatePositions(Math.max(depth, 1), transforms),
     [depth, transforms]
@@ -82,12 +86,12 @@ function BarnsleyFernPoints({ depth, transforms, tracking }) {
   return (
     <>
       <points geometry={geometry}>
-        <pointsMaterial color="#22c55e" size={0.012} sizeAttenuation />
+        <pointsMaterial color={pointColor} size={0.012} sizeAttenuation />
       </points>
       {tracking && (
         <mesh ref={headRef}>
           <sphereGeometry args={[0.025, 12, 12]} />
-          <meshBasicMaterial color="#fde047" />
+          <meshBasicMaterial color={headColor} />
         </mesh>
       )}
     </>
@@ -102,9 +106,12 @@ function BarnsleyFernPoints({ depth, transforms, tracking }) {
  * バーンズリーのシダの完全なシーン。
  */
 export default function BarnsleyFern() {
+  const { theme } = useTheme();
   const [params, setParams] = useState(DEFAULT_PARAMS);
   const [tracking, setTracking] = useState(true);
   const transforms = useMemo(() => paramsToTransforms(params), [params]);
+  const pointColor = MODEL.meshColor[theme];
+  const headColor  = MODEL.meshAccentColor[theme];
 
   return (
     <ControlPanel
@@ -119,7 +126,13 @@ export default function BarnsleyFern() {
         <>
           <FernEditor params={params} onChange={setParams} />
           <FractalScene>
-            <BarnsleyFernPoints depth={currentDepth} transforms={transforms} tracking={tracking} />
+            <BarnsleyFernPoints
+              depth={currentDepth}
+              transforms={transforms}
+              tracking={tracking}
+              pointColor={pointColor}
+              headColor={headColor}
+            />
           </FractalScene>
         </>
       )}

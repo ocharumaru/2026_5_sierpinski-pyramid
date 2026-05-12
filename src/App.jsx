@@ -4,6 +4,7 @@ import { fractals } from './fractals'
 import FrontPage from './pages/FrontPage'
 import ModelSelectionPage from './pages/ModelSelectionPage'
 import ModelIntroPage from './pages/ModelIntroPage'
+import { ThemeProvider } from './styles/pageStyles'
 
 /**
  * ルーティング定義。
@@ -24,9 +25,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div style={{ color: 'white', padding: 40 }}>Loading...</div>}>
-        <AppRoutes />
-      </Suspense>
+      <ThemeProvider defaultTheme='dark'>
+        <Suspense fallback={<div style={{ color: 'white', padding: 40 }}>Loading...</div>}>
+          <AppRoutes />
+        </Suspense>
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

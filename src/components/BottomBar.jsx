@@ -1,5 +1,5 @@
 import ProgressBar from './ProgressBar'
-import { color, shape } from '../styles/pageStyles'
+import { useTheme } from '../styles/pageStyles'
 
 /**
  * ボトムバー（全ページ共通）
@@ -14,6 +14,47 @@ import { color, shape } from '../styles/pageStyles'
  * @param {Function} [onBack]    - 前へボタンの押下ハンドラ
  */
 export default function BottomBar({ step, nextLabel, onNext, backLabel, onBack }) {
+  const { color, shape } = useTheme()
+
+
+  // ── スタイル定数(color参照) ─────────────────────────────────────────────
+
+  const barStyle = {
+    padding: '10px 24px 24px',
+    background: color.bgPage,
+    borderTop: `1px solid ${color.borderSubtle}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10,
+    flexShrink: 0,
+    // 親ページが height:100vh + flex-direction:column のとき常に下端に留まる
+  }
+
+  const backBtnStyle = {
+    flex: '0 0 auto',
+    minWidth: 88,
+    border: `1px solid ${color.borderDefault}`,
+    background: 'transparent',
+    color: color.textSecondary,
+    borderRadius: shape.radiusSm,
+    padding: '11px 0',
+    fontSize: 14,
+    cursor: 'pointer',
+  }
+
+  const primaryBtnStyle = {
+    flex: 1,
+    border: 'none',
+    background: color.accent1,
+    color: color.textBar,
+    borderRadius: shape.radiusSm,
+    padding: '11px 0',
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: 'pointer',
+  }
+
+
   return (
     <div style={barStyle}>
       <ProgressBar step={step} />
@@ -31,44 +72,9 @@ export default function BottomBar({ step, nextLabel, onNext, backLabel, onBack }
   )
 }
 
-// ── スタイル定数 ─────────────────────────────────────────────
-
-const barStyle = {
-  padding: '10px 24px 24px',
-  background: color.bgPage,
-  borderTop: `1px solid rgba(255, 255, 255, 0.07)`,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 10,
-  flexShrink: 0,
-  // 親ページが height:100vh + flex-direction:column のとき常に下端に留まる
-}
+// ── スタイル定数 (color非参照)─────────────────────────────────────────────
 
 const btnRowStyle = {
   display: 'flex',
   gap: 10,
-}
-
-const backBtnStyle = {
-  flex: '0 0 auto',
-  minWidth: 88,
-  border: `1px solid ${color.borderDefault}`,
-  background: 'transparent',
-  color: color.textSecondary,
-  borderRadius: shape.radiusSm,
-  padding: '11px 0',
-  fontSize: 14,
-  cursor: 'pointer',
-}
-
-const primaryBtnStyle = {
-  flex: 1,
-  border: 'none',
-  background: color.purple,
-  color: '#ffffff',
-  borderRadius: shape.radiusSm,
-  padding: '11px 0',
-  fontSize: 14,
-  fontWeight: 600,
-  cursor: 'pointer',
 }

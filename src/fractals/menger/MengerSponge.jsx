@@ -4,6 +4,10 @@ import { useCreateGeometry } from "../../hooks/useCreateGeometry";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
 import PanelCheckbox from "../../components/PanelCheckbox";
+import { useTheme } from "../../styles/pageStyles";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
+
+const MODEL = getFractalCatalogByPath("menger");
 
 /* =========================
    メンガースポンジ生成ロジック
@@ -106,12 +110,12 @@ function generateVertices(depth) {
  *
  * @param {{ depth: number, wireframe: boolean }} props
  */
-function MengerMesh({ depth, wireframe }) {
+function MengerMesh({ depth, wireframe, color }) {
   const geometry = useCreateGeometry(generateVertices, depth);
   return (
     <mesh geometry={geometry}>
       <meshStandardMaterial
-        color="#e8a040"
+        color={color}
         roughness={0.35}
         metalness={0.1}
         side={THREE.DoubleSide}
@@ -125,7 +129,9 @@ function MengerMesh({ depth, wireframe }) {
  * メンガースポンジの完全なシーン。
  */
 export default function MengerSponge() {
+  const { theme } = useTheme();
   const [wireframe, setWireframe] = useState(false);
+  const meshColor = MODEL.meshColor[theme];
 
   return (
     <ControlPanel
@@ -138,7 +144,7 @@ export default function MengerSponge() {
     >
       {({ currentDepth }) => (
         <FractalScene>
-          <MengerMesh depth={currentDepth} wireframe={wireframe} />
+          <MengerMesh depth={currentDepth} wireframe={wireframe} color={meshColor} />
         </FractalScene>
       )}
     </ControlPanel>

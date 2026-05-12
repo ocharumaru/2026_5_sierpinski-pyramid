@@ -1,4 +1,4 @@
-import { color } from '../styles/pageStyles'
+import { useTheme } from '../styles/pageStyles'
 
 /**
  * 進捗バー（全ページ共通）
@@ -13,6 +13,8 @@ import { color } from '../styles/pageStyles'
  * @param {number} step - 現在のステップ（1〜4）
  */
 export default function ProgressBar({ step }) {
+  const { color } = useTheme() 
+  
   return (
     <div style={trackStyle}>
       {[1, 2, 3, 4].map((n) => (
@@ -20,7 +22,7 @@ export default function ProgressBar({ step }) {
           key={n}
           style={{
             ...segStyle,
-            background: n <= step ? color.purple : 'rgba(255, 255, 255, 0.10)',
+            background: n <= step ? color.accent1 : color.borderSubtle,
           }}
         />
       ))}

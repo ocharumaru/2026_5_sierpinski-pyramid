@@ -132,8 +132,8 @@ void main() {
       ? shadeLit(hitPos, n, ro, travel)
       : shadeFlat(n);
   } else {
-    float v = 0.6 + 0.4 * smoothstep(-0.2, 0.8, rd.y);
-    col = vec3(0.03, 0.04, 0.06) * v;
+    // 背景は Canvas の CSS background (color.bgPage) に任せて他モデルと揃える。
+    discard;
   }
 
   col = pow(col, vec3(1.0 / 2.2));

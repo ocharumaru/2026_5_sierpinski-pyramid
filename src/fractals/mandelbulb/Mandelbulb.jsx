@@ -5,36 +5,10 @@ import * as THREE from "three";
 import ControlPanel from "../../components/ControlPanel";
 import PanelCheckbox from "../../components/PanelCheckbox";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { color, shape } from "../../styles/pageStyles";
+import { useTheme } from "../../styles/pageStyles";
 import { vertexShader, fragmentShader } from "./mandelbulbShader";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 
-const basePanel = {
-  position: "absolute",
-  background: color.bgOverlay,
-  color: color.textPrimary,
-  border: `1px solid ${color.borderDefault}`,
-  borderRadius: shape.radiusMd,
-  fontFamily: "sans-serif",
-  zIndex: 10,
-};
-
-const desktopPanel = {
-  panel:  { ...basePanel, top: 16, right: 16, padding: "12px 14px", width: 260, fontSize: 13 },
-  title:  { fontWeight: 700, fontSize: 13, color: color.textPrimary, paddingBottom: 8, borderBottom: `1px solid ${color.borderSubtle}` },
-  field:  { marginTop: 10 },
-  label:  { color: color.textSecondary, fontSize: 12 },
-  slider: { width: "100%", marginTop: 4, accentColor: color.purple },
-  hint:   { color: color.textMuted, fontSize: 11, marginTop: 10, lineHeight: 1.5 },
-};
-
-const mobilePanel = {
-  panel:  { ...basePanel, bottom: 12, left: 12, right: 12, padding: "8px 10px", fontSize: 12 },
-  title:  { fontWeight: 700, fontSize: 12, color: color.textPrimary, paddingBottom: 6, borderBottom: `1px solid ${color.borderSubtle}` },
-  field:  { marginTop: 8 },
-  label:  { color: color.textSecondary, fontSize: 11 },
-  slider: { width: "100%", marginTop: 3, accentColor: color.purple },
-  hint:   { color: color.textMuted, fontSize: 10, marginTop: 8, lineHeight: 1.45 },
-};
 
 /**
  * カメラを内包する大きな球の内側にマンデルバルブのレイマーチを描画する。
@@ -89,12 +63,43 @@ function MandelbulbBackground({ power, bailout, maxIterCap, shadow }) {
  * マンデルバルブの完全なシーン。
  */
 export default function Mandelbulb() {
+  const { color, shape } = useTheme();
   const [power, setPower] = useState(8);
   const [bailout, setBailout] = useState(4);
   const [shadow, setShadow] = useState(false);
   const isMobile = useIsMobile();
+
+  const basePanel = {
+    position: "absolute",
+    background: color.cpOverlay,
+    color: color.cpText,
+    border: `1px solid ${color.cpBorder}`,
+    borderRadius: shape.radiusMd,
+    fontFamily: "sans-serif",
+    zIndex: 10,
+  };
+
+  const desktopPanel = {
+    panel:  { ...basePanel, top: 16, right: 16, padding: "12px 14px", width: 260, fontSize: 13 },
+    title:  { fontWeight: 700, fontSize: 13, color: color.cpText, paddingBottom: 8, borderBottom: `1px solid ${color.cpSubtle}` },
+    field:  { marginTop: 10 },
+    label:  { color: color.cpText, fontSize: 12 },
+    slider: { width: "100%", marginTop: 4, accentColor: color.accent1 },
+    hint:   { color: color.cpText, fontSize: 11, marginTop: 10, lineHeight: 1.5 },
+  };
+
+  const mobilePanel = {
+    panel:  { ...basePanel, bottom: 12, left: 12, right: 12, padding: "8px 10px", fontSize: 12 },
+    title:  { fontWeight: 700, fontSize: 12, color: color.cpText, paddingBottom: 6, borderBottom: `1px solid ${color.cpSubtle}` },
+    field:  { marginTop: 8 },
+    label:  { color: color.cpText, fontSize: 11 },
+    slider: { width: "100%", marginTop: 3, accentColor: color.accent1 },
+    hint:   { color: color.cpText, fontSize: 10, marginTop: 8, lineHeight: 1.45 },
+  };
+
   const s = isMobile ? mobilePanel : desktopPanel;
 
+  
   return (
     <ControlPanel
       maxDepth={24}
@@ -143,7 +148,8 @@ export default function Mandelbulb() {
           </div>
 
           <Canvas
-            style={{ width: "100vw", height: "100dvh" }}
+            style={{ width: "100vw", height: "100dvh", background: color.bgPage }}
+            gl={{ alpha: true }}
             camera={{ position: [0, 0, 3.0], fov: 50 }}
             dpr={[1, isMobile ? 1.25 : 2]}
           >

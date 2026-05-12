@@ -2,6 +2,10 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import FractalScene from "../../components/FractalScene";
 import ControlPanel from "../../components/ControlPanel";
+import { useTheme } from "../../styles/pageStyles";
+import { getFractalCatalogByPath } from "../../models/fractalCatalog";
+
+const MODEL = getFractalCatalogByPath("koch");
 
 /* =========================
    コッホ曲線 生成ロジック
@@ -69,20 +73,23 @@ function generatePoints(depth) {
  *
  * @param {{ depth: number }} props
  */
-function KochLine({ depth }) {
+function KochLine({ depth, color }) {
   const points = useMemo(() => generatePoints(depth), [depth]);
-  return <Line points={points} color="#00e5ff" lineWidth={2} />;
+  return <Line points={points} color={color} lineWidth={2} />;
 }
 
 /**
  * コッホ曲線の完全なシーン。
  */
 export default function KochCurve() {
+  const { theme } = useTheme();
+  const meshColor = MODEL.meshColor[theme];
+
   return (
     <ControlPanel maxDepth={7} defaultDepth={5} defaultInterval={400}>
       {({ currentDepth }) => (
         <FractalScene>
-          <KochLine depth={currentDepth} />
+          <KochLine depth={currentDepth} color={meshColor} />
         </FractalScene>
       )}
     </ControlPanel>

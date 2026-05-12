@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { color } from "../styles/pageStyles";
+import { useTheme } from "../styles/pageStyles";
 
 const BOX_SIZE = 16;
 
@@ -12,13 +12,14 @@ const BOX_SIZE = 16;
  * @param {{ label: string, checked: boolean, onChange: (next: boolean) => void }} props
  */
 export default function PanelCheckbox({ label, checked, onChange }) {
+  const { color } = useTheme();
   const isMobile = useIsMobile();
   const [hover, setHover] = useState(false);
 
   const borderColor = checked
-    ? color.purple
+    ? color.accent1
     : hover
-      ? color.purpleLight
+      ? color.accent1Light
       : color.borderDefault;
 
   return (
@@ -63,7 +64,7 @@ export default function PanelCheckbox({ label, checked, onChange }) {
             height: BOX_SIZE,
             borderRadius: 4,
             border: `1px solid ${borderColor}`,
-            background: checked ? color.purple : color.bgPanel,
+            background: checked ? color.accent1 : color.bgPanel,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
