@@ -174,6 +174,26 @@ export const fractalCatalog = [
     },
   },
   {
+    path: 'dragon',
+    name: 'ドラゴン曲線',
+    image: '/images/dragon.png',
+    meshColor: { dark: '#fb923c', light: '#b45309' },
+    intro: {
+      beginner: {
+        overview:    md('dragon', 'beginner', 'overview'),
+        feature:     md('dragon', 'beginner', 'feature'),
+        application: md('dragon', 'beginner', 'application'),
+        howTo:       md('dragon', 'beginner', 'howTo'),
+      },
+      advanced: {
+        overview:    md('dragon', 'advanced', 'overview'),
+        feature:     md('dragon', 'advanced', 'feature'),
+        application: md('dragon', 'advanced', 'application'),
+        howTo:       md('dragon', 'advanced', 'howTo'),
+      },
+    },
+  },
+  {
     path: 'barnsley',
     name: 'バーンズリーのシダ',
     image: '/images/barnsley.png',
