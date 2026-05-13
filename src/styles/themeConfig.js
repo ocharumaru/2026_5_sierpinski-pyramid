@@ -38,12 +38,14 @@ export const colorDark = {
   bgInfo:        'rgba(0, 255, 200, 0.04)',
   bgCard:        'rgba(0, 255, 200, 0.04)',
 }
+colorDark.bgGenPage = 'radial-gradient(ellipse at center, rgba(33, 106, 122, 0.49) 0%, rgba(19, 28, 108, 0.49) 45%, rgba(1, 1, 20, 0.29) 100%)';
 
 export const colorLight = {
   bgPage:        '#fdf6f0',
   bgPanel:       'rgba(180, 100, 60, 0.05)',
   bgPanelHover:  'rgba(180, 100, 60, 0.09)',
   bgOverlay:     'rgba(60, 30, 10, 0.45)',
+  bgGenPage:     'rgba(252, 235, 222, 0.85)',
 
   borderSubtle:  'rgba(160, 80, 40, 0.12)',
   borderDefault: 'rgba(160, 80, 40, 0.22)',
