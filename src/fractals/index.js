@@ -13,6 +13,7 @@ const componentsByPath = {
   sierpinski: lazy(() => import('./sierpinski/SierpinskiPyramid')),
   menger: lazy(() => import('./menger/MengerSponge')),
   mandelbrot: lazy(() => import('./mandelbrot/MandelbrotSet')),
+  julia: lazy(() => import('./julia/JuliaSet')),
   mandelbulb: lazy(() => import('./mandelbulb/Mandelbulb')),
   koch: lazy(() => import('./koch/KochCurve')),
   hilbert: lazy(() => import('./hilbert/HilbertCurve')),

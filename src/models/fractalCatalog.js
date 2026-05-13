@@ -94,6 +94,26 @@ export const fractalCatalog = [
     },
   },
   {
+    path: 'julia',
+    name: 'ジュリア集合',
+    image: '/images/julia.png',
+    meshColor: { dark: '#f4a3c0', light: '#9b3d63' },
+    intro: {
+      beginner: {
+        overview:    md('julia', 'beginner', 'overview'),
+        feature:     md('julia', 'beginner', 'feature'),
+        application: md('julia', 'beginner', 'application'),
+        howTo:       md('julia', 'beginner', 'howTo'),
+      },
+      advanced: {
+        overview:    md('julia', 'advanced', 'overview'),
+        feature:     md('julia', 'advanced', 'feature'),
+        application: md('julia', 'advanced', 'application'),
+        howTo:       md('julia', 'advanced', 'howTo'),
+      },
+    },
+  },
+  {
     path: 'mandelbulb',
     name: 'マンデルバルブ',
     image: '/images/mandelbulb.png',
