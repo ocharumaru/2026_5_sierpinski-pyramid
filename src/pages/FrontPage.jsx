@@ -12,7 +12,7 @@ import LDtoggle from '../components/LDtoggleButton'
  */
 export default function FrontPage() {
   const navigate = useNavigate()
-  const { pageStyles, color, theme, toggleTheme } = useTheme()
+  const { pageStyles, color } = useTheme()
 
   // ── スタイル定数 (clor参照)─────────────────────────────────────────────
 

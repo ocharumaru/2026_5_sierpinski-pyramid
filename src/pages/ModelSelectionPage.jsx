@@ -35,7 +35,7 @@ const availablePaths = new Set(fractals.map((f) => f.path))
 
 export default function ModelSelectionPage() {
   const navigate = useNavigate()
-  const { pageStyles, color, theme, toggleTheme } = useTheme()
+  const { pageStyles, color } = useTheme()
   const [hoveredId, setHoveredId] = useState(null)
 
   // ── スタイル定数 (color参照)─────────────────────────────────────────────

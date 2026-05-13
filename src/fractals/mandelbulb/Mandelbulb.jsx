@@ -7,20 +7,17 @@ import PanelCheckbox from "../../components/PanelCheckbox";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useTheme } from "../../styles/pageStyles";
 import { vertexShader, fragmentShader } from "./mandelbulbShader";
-import { getFractalCatalogByPath } from "../../models/fractalCatalog";
 
+const POWER_PRESETS = [
+  { label: "n=4 丸め", value: 4 },
+  { label: "n=8 標準", value: 8 },
+  { label: "n=10 鋭め", value: 10 },
+];
 
-/**
- * カメラを内包する大きな球の内側にマンデルバルブのレイマーチを描画する。
- * カメラ操作は OrbitControls に任せ、シェーダ側は cameraPosition と
- * 各フラグメントの worldPos からレイを再構築する。
- *
- * @param {{ power: number, bailout: number, maxIterCap: number, shadow: boolean }} props
- */
+const BAILOUT = 2;
+
 function MandelbulbBackground({ power, bailout, maxIterCap, shadow }) {
   const matRef = useRef(null);
-  // ControlPanel から渡る maxIterCap は整数で 250ms ごとに飛ぶので、
-  // 描画用の uMaxIterF は毎フレーム少しずつ追従させて視覚的な階段を消す。
   const displayedIterRef = useRef(2);
 
   const uniforms = useMemo(
@@ -59,13 +56,9 @@ function MandelbulbBackground({ power, bailout, maxIterCap, shadow }) {
   );
 }
 
-/**
- * マンデルバルブの完全なシーン。
- */
 export default function Mandelbulb() {
   const { color, shape } = useTheme();
   const [power, setPower] = useState(8);
-  const [bailout, setBailout] = useState(4);
   const [shadow, setShadow] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const isMobile = useIsMobile();
@@ -81,26 +74,29 @@ export default function Mandelbulb() {
   };
 
   const desktopPanel = {
-    panel:  { ...basePanel, top: 16, right: 16, padding: "12px 14px", width: 260, fontSize: 13 },
-    title:  { fontWeight: 700, fontSize: 13, color: color.cpText, paddingBottom: 8, borderBottom: `1px solid ${color.cpSubtle}` },
-    field:  { marginTop: 10 },
-    label:  { color: color.cpText, fontSize: 12 },
+    panel: { ...basePanel, top: 16, right: 16, padding: "12px 14px", width: 286, fontSize: 13 },
+    header: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, paddingBottom: 8, borderBottom: `1px solid ${color.cpSubtle}` },
+    title: { fontWeight: 700, fontSize: 13, color: color.cpText },
+    field: { marginTop: 10 },
+    label: { display: "flex", justifyContent: "space-between", gap: 10, color: color.cpText, fontSize: 12 },
     slider: { width: "100%", marginTop: 4, accentColor: color.accent1 },
-    hint:   { color: color.cpText, fontSize: 11, marginTop: 10, lineHeight: 1.5 },
+    hint: { color: color.cpText, fontSize: 11, marginTop: 10, lineHeight: 1.5 },
+    presetRow: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6, marginTop: 7 },
   };
 
   const mobilePanel = {
-    panel:  { ...basePanel, bottom: 12, left: 12, right: 12, padding: "8px 10px", fontSize: 12 },
-    title:  { fontWeight: 700, fontSize: 12, color: color.cpText, paddingBottom: 6, borderBottom: `1px solid ${color.cpSubtle}` },
-    field:  { marginTop: 8 },
-    label:  { color: color.cpText, fontSize: 11 },
+    panel: { ...basePanel, bottom: 12, left: 12, right: 12, padding: "8px 10px", fontSize: 12 },
+    header: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, paddingBottom: 6, borderBottom: `1px solid ${color.cpSubtle}` },
+    title: { fontWeight: 700, fontSize: 12, color: color.cpText },
+    field: { marginTop: 8 },
+    label: { display: "flex", justifyContent: "space-between", gap: 8, color: color.cpText, fontSize: 11 },
     slider: { width: "100%", marginTop: 3, accentColor: color.accent1 },
-    hint:   { color: color.cpText, fontSize: 10, marginTop: 8, lineHeight: 1.45 },
+    hint: { color: color.cpText, fontSize: 10, marginTop: 8, lineHeight: 1.45 },
+    presetRow: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 4, marginTop: 6 },
   };
 
   const s = isMobile ? mobilePanel : desktopPanel;
 
-  
   return (
     <ControlPanel
       maxDepth={24}
@@ -114,29 +110,54 @@ export default function Mandelbulb() {
         <>
           <div style={s.panel}>
             <div style={s.header}>
-              <span style={s.title}>Mandelbulb (Raymarch)</span>
-
+              <span style={s.title}>マンデルバルブ</span>
               <button
-                onClick={() => setIsMinimized((v) => !v)}
+                type="button"
+                onClick={() => setIsMinimized((value) => !value)}
+                aria-label={isMinimized ? "パネルを開く" : "パネルを閉じる"}
                 style={{
-                  background: 'transparent',
+                  background: "transparent",
                   border: `1px solid ${color.cpBorder}`,
                   borderRadius: shape.radiusSm,
                   color: color.cpText,
-                  cursor: 'pointer',
+                  cursor: "pointer",
                   fontSize: 11,
-                  padding: '2px 7px',
+                  padding: "2px 7px",
                   lineHeight: 1,
                 }}
               >
-                {isMinimized ? '▲' : '▼'}
+                {isMinimized ? "+" : "-"}
               </button>
             </div>
-            
+
             {!isMinimized && (
               <>
                 <div style={s.field}>
-                  <div style={s.label}>べき乗の指数: {power} <span style={{fontSize: '0.9em'}}>（花弁の数などが変わる）</span></div>
+                  <div style={s.label}>
+                    <span>次数 n</span>
+                    <strong>{power}</strong>
+                  </div>
+                  <div style={s.presetRow}>
+                    {POWER_PRESETS.map((preset) => (
+                      <button
+                        key={preset.value}
+                        type="button"
+                        onClick={() => setPower(preset.value)}
+                        style={{
+                          border: `1px solid ${power === preset.value ? color.accent1 : color.cpBorder}`,
+                          borderRadius: shape.radiusSm,
+                          background: power === preset.value ? color.accent1 : "transparent",
+                          color: power === preset.value ? color.accent1Text : color.cpText,
+                          cursor: "pointer",
+                          fontSize: isMobile ? 10 : 11,
+                          padding: isMobile ? "4px 3px" : "5px 4px",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
                   <input
                     style={s.slider}
                     type="range"
@@ -144,7 +165,7 @@ export default function Mandelbulb() {
                     max="12"
                     step="1"
                     value={power}
-                    onChange={(e) => setPower(parseInt(e.target.value, 10))}
+                    onChange={(event) => setPower(parseInt(event.target.value, 10))}
                   />
                 </div>
 
@@ -152,7 +173,7 @@ export default function Mandelbulb() {
                   {isMobile
                     ? "1本指: 回転 / 2本指: ピンチで拡大・ドラッグで移動"
                     : "左ドラッグ: 回転 / 右ドラッグ: 平行移動 / ホイール: ズーム"}
-                </div>  
+                </div>
               </>
             )}
           </div>
@@ -165,7 +186,7 @@ export default function Mandelbulb() {
           >
             <MandelbulbBackground
               power={power}
-              bailout={bailout}
+              bailout={BAILOUT}
               maxIterCap={Math.max(2, currentDepth)}
               shadow={shadow}
             />

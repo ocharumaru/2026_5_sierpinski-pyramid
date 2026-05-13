@@ -36,7 +36,7 @@ import 'katex/dist/katex.min.css'
  */
 export default function ModelIntroPage() {
   const { modelId } = useParams()
-  const { pageStyles, color, shape, theme, toggleTheme } = useTheme()
+  const { pageStyles, color, shape } = useTheme()
   const navigate = useNavigate()
   const [level, setLevel] = useState('beginner')
   const [openItems, setOpenItems] = useState({})
@@ -162,7 +162,7 @@ export default function ModelIntroPage() {
   // ラッパーで囲み、table-layout: fixed で列幅を制御する。
 
   const markdownComponents = {
-    table: ({ node, ...props }) => (
+    table: ({ ...props }) => (
       <div style={{ overflowX: 'auto', width: '100%' }}>
         <table
           style={{
@@ -176,7 +176,7 @@ export default function ModelIntroPage() {
         />
       </div>
     ),
-    th: ({ node, ...props }) => (
+    th: ({ ...props }) => (
       <th
         style={{
           borderBottom: `1px solid ${color.borderSubtle}`,
@@ -189,7 +189,7 @@ export default function ModelIntroPage() {
         {...props}
       />
     ),
-    td: ({ node, ...props }) => (
+    td: ({ ...props }) => (
       <td
         style={{
           borderBottom: `1px solid ${color.borderSubtle}`,
@@ -199,25 +199,25 @@ export default function ModelIntroPage() {
         {...props}
       />
     ),
-    h4: ({ node, ...props }) => (
+    h4: ({ ...props }) => (
       <h4
         style={{ fontSize: 13, fontWeight: 500, color: color.textPrimary, margin: '12px 0 4px' }}
         {...props}
       />
     ),
-    p: ({ node, ...props }) => (
+    p: ({ ...props }) => (
       <p style={{ margin: '4px 0', lineHeight: 1.75 }} {...props} />
     ),
-    ul: ({ node, ...props }) => (
+    ul: ({ ...props }) => (
       <ul style={{ paddingLeft: 18, margin: '4px 0' }} {...props} />
     ),
-    ol: ({ node, ...props }) => (
+    ol: ({ ...props }) => (
       <ol style={{ paddingLeft: 18, margin: '4px 0' }} {...props} />
     ),
-    li: ({ node, ...props }) => (
+    li: ({ ...props }) => (
       <li style={{ margin: '2px 0', lineHeight: 1.7 }} {...props} />
     ),
-    strong: ({ node, ...props }) => (
+    strong: ({ ...props }) => (
       <strong style={{ color: color.textPrimary, fontWeight: 500 }} {...props} />
     ),
   }
