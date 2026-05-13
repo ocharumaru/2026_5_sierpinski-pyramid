@@ -37,7 +37,7 @@ export const fractalCatalog = [
     path: 'sierpinski',
     name: 'シェルピンスキー四面体',
     image: '/images/sierpinski.png',
-    meshColor: { dark: '#4fd1ff', light: '#187caf' },
+     meshColor: { dark: '#69cce7', light: '#51e5ff' },
     intro: {
       beginner: {
         overview:    md('sierpinski', 'beginner', 'overview'),
@@ -57,7 +57,7 @@ export const fractalCatalog = [
     path: 'menger',
     name: 'メンガースポンジ',
     image: '/images/menger.png',
-    meshColor: { dark: '#e8a040', light: '#a96d18' },
+    meshColor: { dark: '#efb147', light: '#fd8a0e' },
     intro: {
       beginner: {
         overview:    md('menger', 'beginner', 'overview'),
@@ -136,8 +136,8 @@ export const fractalCatalog = [
     path: 'hilbert',
     name: '3次元ヒルベルト曲線',
     image: '/images/hilbert.png',
-    meshColor:       { dark: '#a78bfa', light: '#4d3463' },
-    meshAccentColor: { dark: '#fde047', light: '#a98712' },
+    meshColor:       { dark: '#a76bec', light: '#551c87' },
+    meshAccentColor: { dark: '#e6e328', light: '#db3b13' },
     intro: {
       beginner: {
         overview:    md('hilbert', 'beginner', 'overview'),
@@ -157,7 +157,7 @@ export const fractalCatalog = [
     path: 'koch',
     name: 'コッホ曲線',
     image: '/images/koch.png',
-    meshColor: { dark: '#00e5ff', light: '#00919e' },
+    meshColor: { dark: '#00ffea', light: '#059dab' },
     intro: {
       beginner: {
         overview:    md('koch', 'beginner', 'overview'),
