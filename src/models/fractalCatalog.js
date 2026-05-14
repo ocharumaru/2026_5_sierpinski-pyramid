@@ -94,6 +94,27 @@ export const fractalCatalog = [
     },
   },
   {
+    path: 'newton',
+    name: 'ニュートンフラクタル',
+    image: '/images/newton.png',
+    meshColor:       { dark: '#ffb86b', light: '#a85e16' },
+    meshAccentColor: { dark: '#7dd3fc', light: '#1a5b80' },
+    intro: {
+      beginner: {
+        overview:    md('newton', 'beginner', 'overview'),
+        feature:     md('newton', 'beginner', 'feature'),
+        application: md('newton', 'beginner', 'application'),
+        howTo:       md('newton', 'beginner', 'howTo'),
+      },
+      advanced: {
+        overview:    md('newton', 'advanced', 'overview'),
+        feature:     md('newton', 'advanced', 'feature'),
+        application: md('newton', 'advanced', 'application'),
+        howTo:       md('newton', 'advanced', 'howTo'),
+      },
+    },
+  },
+  {
     path: 'lorenz',
     name: 'ローレンツ・アトラクタ',
     image: '/images/lorenz.png',
