@@ -141,8 +141,8 @@ export default function NewtonControls({
           <Slider
             label="緩和係数 実部 aRe"
             value={aRe}
-            min={-2}
-            max={2}
+            min={0.2}
+            max={1.8}
             step={0.01}
             format={(v) => v.toFixed(2)}
             onChange={setARe}
@@ -151,8 +151,8 @@ export default function NewtonControls({
           <Slider
             label="緩和係数 虚部 aIm"
             value={aIm}
-            min={-2}
-            max={2}
+            min={-0.8}
+            max={0.8}
             step={0.01}
             format={(v) => v.toFixed(2)}
             onChange={setAIm}
@@ -161,8 +161,8 @@ export default function NewtonControls({
           <Slider
             label="収束判定 tol"
             value={tolSliderValue}
-            min={-5}
-            max={-1}
+            min={-4}
+            max={-2}
             step={0.01}
             format={() => tol.toExponential(0)}
             onChange={(v) => setTol(10 ** v)}
