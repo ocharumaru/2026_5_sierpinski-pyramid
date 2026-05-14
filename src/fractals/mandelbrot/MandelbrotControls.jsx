@@ -38,6 +38,7 @@ function Slider({ label, value, min, max, step, format, onChange, styles }) {
 export default function MandelbrotControls({ bailout, setBailout, onZoomIn, onZoomOut, onResetView }) {
   const isMobile = useIsMobile();
   const [isMinimized, setIsMinimized] = useState(false);
+  const [pressedZoom, setPressedZoom] = useState(null);
   const { color, shape, pageStyles } = useTheme();
 
   /* =========================
@@ -66,7 +67,8 @@ export default function MandelbrotControls({ bailout, setBailout, onZoomIn, onZo
     slider:       { width: "100%", accentColor: color.accent1 },
     buttonRow:    { display: "flex", gap: 6, flexWrap: "wrap", marginTop: 4 },
     button:       { ...pageStyles.primaryButton, padding: "6px 10px", fontSize: 11 },
-    outlineBtn:   { ...pageStyles.outlineButton, padding: "6px 10px", fontSize: 11, textDecoration: "none" },
+    outlineBtn:   { padding: "6px 10px", fontSize: 11, cursor: "pointer", borderRadius: shape.radiusSm, border: `1px solid ${color.accent1}`, background: "transparent", color: color.accent1 },
+    outlineBtnon: { padding: "6px 10px", fontSize: 11, cursor: "pointer", borderRadius: shape.radiusSm, border: `1px solid ${color.accent1}`, background: color.accent1, color: color.accent1Text ?? "#fff" },
     hint:         { margin: "10px 0 0", color: color.cpText, fontSize: 11, lineHeight: 1.45 },
   };
 
@@ -76,7 +78,8 @@ export default function MandelbrotControls({ bailout, setBailout, onZoomIn, onZo
     title:        { fontWeight: 700, fontSize: 11, color: color.cpText },
     field:        { marginBottom: 6 },
     button:       { ...pageStyles.primaryButton, padding: "5px 9px", fontSize: 11 },
-    outlineBtn:   { ...pageStyles.outlineButton, padding: "5px 9px", fontSize: 11, textDecoration: "none" },
+    outlineBtn:   { padding: "5px 9px", fontSize: 11, cursor: "pointer", borderRadius: shape.radiusSm, border: `1px solid ${color.accent1}`, background: "transparent", color: color.accent1 },
+    outlineBtnon: { padding: "5px 9px", fontSize: 11, cursor: "pointer", borderRadius: shape.radiusSm, border: `1px solid ${color.accent1}`, background: color.accent1, color: color.accent1Text ?? "#fff" },
     hint:         { margin: "8px 0 0", color: color.cpText, fontSize: 10, lineHeight: 1.45 },
   };
 
@@ -127,13 +130,31 @@ export default function MandelbrotControls({ bailout, setBailout, onZoomIn, onZo
           />
 
           <div style={s.buttonRow}>
-            <button type="button" onClick={onZoomIn} style={s.button}>
+            <button
+              type="button"
+              onMouseDown={() => { setPressedZoom("in"); onZoomIn(); }}
+              onMouseUp={() => setPressedZoom(null)}
+              onMouseLeave={() => setPressedZoom(null)}
+              style={{ ...(pressedZoom === "in" ? s.outlineBtnon : s.outlineBtn) }}
+            >
               拡大
             </button>
-            <button type="button" onClick={onZoomOut} style={s.outlineBtn}>
+            <button
+              type="button"
+              onMouseDown={() => { setPressedZoom("out"); onZoomOut(); }}
+              onMouseUp={() => setPressedZoom(null)}
+              onMouseLeave={() => setPressedZoom(null)}
+              style={{ ...s.outlineBtn, ...(pressedZoom === "out" ? s.outlineBtnon : {}) }}
+            >
               縮小
             </button>
-            <button type="button" onClick={onResetView} style={s.outlineBtn}>
+            <button
+              type="button"
+              onMouseDown={() => { setPressedZoom("reset"); onResetView(); }}
+              onMouseUp={() => setPressedZoom(null)}
+              onMouseLeave={() => setPressedZoom(null)}
+              style={{ ...s.outlineBtn, ...(pressedZoom === "reset" ? s.outlineBtnon : {}) }}
+            >
               表示リセット
             </button>
           </div>
