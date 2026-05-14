@@ -5,9 +5,10 @@ import ControlPanel from "../../components/ControlPanel";
 import PanelCheckbox from "../../components/PanelCheckbox";
 import { useTheme } from "../../styles/pageStyles";
 import { getFractalCatalogByPath } from "../../models/fractalCatalog";
+import PythagorasControls from "./PythagorasControls";
 
 const MODEL = getFractalCatalogByPath("pythagoras");
-const BRANCH_ANGLE = Math.PI / 4;
+const DEFAULT_BRANCH_ANGLE_DEG = 45;
 const VIEW_SIZE = 3.2;
 const MIN_NORMALIZE_SPAN = 2.4;
 const SLAB_THICKNESS = 0.045;
@@ -24,7 +25,7 @@ function pushBounds(bounds, x, y) {
   bounds.maxY = Math.max(bounds.maxY, y);
 }
 
-function addSquare(out, bounds, ax, ay, bx, by, depth, level) {
+function addSquare(out, bounds, ax, ay, bx, by, depth, level, branchAngle) {
   const dx = bx - ax;
   const dy = by - ay;
   const side = Math.hypot(dx, dy);
@@ -57,13 +58,13 @@ function addSquare(out, bounds, ax, ay, bx, by, depth, level) {
 
   if (depth === 0) return;
 
-  const cos = Math.cos(BRANCH_ANGLE);
-  const sin = Math.sin(BRANCH_ANGLE);
+  const cos = Math.cos(branchAngle);
+  const sin = Math.sin(branchAngle);
   const apexX = dxTop + ux * side * cos * cos + nx * side * cos * sin;
   const apexY = dyTop + uy * side * cos * cos + ny * side * cos * sin;
 
-  addSquare(out, bounds, dxTop, dyTop, apexX, apexY, depth - 1, level + 1);
-  addSquare(out, bounds, apexX, apexY, cx, cy, depth - 1, level + 1);
+  addSquare(out, bounds, dxTop, dyTop, apexX, apexY, depth - 1, level + 1, branchAngle);
+  addSquare(out, bounds, apexX, apexY, cx, cy, depth - 1, level + 1, branchAngle);
 }
 
 function normalizeSquares(squares, bounds) {
@@ -91,7 +92,7 @@ function normalizeSquares(squares, bounds) {
  * @param {number} depth - フラクタルの再帰の深さ
  * @returns {{ squares: { x: number, y: number, side: number, angle: number, level: number }[], maxLevel: number }}
  */
-function generateTree(depth) {
+function generateTree(depth, branchAngle) {
   const squares = [];
   const bounds = {
     minX: Infinity,
@@ -100,7 +101,7 @@ function generateTree(depth) {
     maxY: -Infinity,
   };
 
-  addSquare(squares, bounds, -0.5, 0, 0.5, 0, depth, 0);
+  addSquare(squares, bounds, -0.5, 0, 0.5, 0, depth, 0, branchAngle);
 
   return {
     squares: normalizeSquares(squares, bounds),
@@ -152,8 +153,9 @@ function SquareInstances({ squares, color, wireframe }) {
   );
 }
 
-function PythagorasTreeMesh({ depth, color, accentColor, wireframe }) {
-  const tree = useMemo(() => generateTree(depth), [depth]);
+function PythagorasTreeMesh({ depth, branchAngleDeg, color, accentColor, wireframe }) {
+  const branchAngle = THREE.MathUtils.degToRad(branchAngleDeg);
+  const tree = useMemo(() => generateTree(depth, branchAngle), [depth, branchAngle]);
   const groups = useMemo(() => {
     const baseColor = new THREE.Color(color);
     const topColor = new THREE.Color(accentColor);
@@ -192,6 +194,7 @@ function PythagorasTreeMesh({ depth, color, accentColor, wireframe }) {
 export default function PythagorasTree() {
   const { theme } = useTheme();
   const [wireframe, setWireframe] = useState(false);
+  const [branchAngleDeg, setBranchAngleDeg] = useState(DEFAULT_BRANCH_ANGLE_DEG);
   const meshColor = MODEL.meshColor[theme];
   const accentColor = MODEL.meshAccentColor[theme];
 
@@ -205,14 +208,22 @@ export default function PythagorasTree() {
       }
     >
       {({ currentDepth }) => (
-        <FractalScene cameraPosition={[0, -0.55, 5.2]}>
-          <PythagorasTreeMesh
-            depth={currentDepth}
-            color={meshColor}
-            accentColor={accentColor}
-            wireframe={wireframe}
+        <>
+          <PythagorasControls
+            branchAngleDeg={branchAngleDeg}
+            setBranchAngleDeg={setBranchAngleDeg}
+            defaultAngleDeg={DEFAULT_BRANCH_ANGLE_DEG}
           />
-        </FractalScene>
+          <FractalScene cameraPosition={[0, -0.55, 5.2]}>
+            <PythagorasTreeMesh
+              depth={currentDepth}
+              branchAngleDeg={branchAngleDeg}
+              color={meshColor}
+              accentColor={accentColor}
+              wireframe={wireframe}
+            />
+          </FractalScene>
+        </>
       )}
     </ControlPanel>
   );
