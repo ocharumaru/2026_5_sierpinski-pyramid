@@ -94,6 +94,48 @@ export const fractalCatalog = [
     },
   },
   {
+    path: 'newton',
+    name: 'ニュートンフラクタル',
+    image: '/images/newton.png',
+    meshColor:       { dark: '#ffb86b', light: '#a85e16' },
+    meshAccentColor: { dark: '#7dd3fc', light: '#1a5b80' },
+    intro: {
+      beginner: {
+        overview:    md('newton', 'beginner', 'overview'),
+        feature:     md('newton', 'beginner', 'feature'),
+        application: md('newton', 'beginner', 'application'),
+        howTo:       md('newton', 'beginner', 'howTo'),
+      },
+      advanced: {
+        overview:    md('newton', 'advanced', 'overview'),
+        feature:     md('newton', 'advanced', 'feature'),
+        application: md('newton', 'advanced', 'application'),
+        howTo:       md('newton', 'advanced', 'howTo'),
+      },
+    },
+  },
+  {
+    path: 'lorenz',
+    name: 'ローレンツ・アトラクタ',
+    image: '/images/lorenz.png',
+    meshColor:       { dark: '#7cf0c2', light: '#1f8a66' },
+    meshAccentColor: { dark: '#f97316', light: '#9c3a06' },
+    intro: {
+      beginner: {
+        overview:    md('lorenz', 'beginner', 'overview'),
+        feature:     md('lorenz', 'beginner', 'feature'),
+        application: md('lorenz', 'beginner', 'application'),
+        howTo:       md('lorenz', 'beginner', 'howTo'),
+      },
+      advanced: {
+        overview:    md('lorenz', 'advanced', 'overview'),
+        feature:     md('lorenz', 'advanced', 'feature'),
+        application: md('lorenz', 'advanced', 'application'),
+        howTo:       md('lorenz', 'advanced', 'howTo'),
+      },
+    },
+  },
+  {
     path: 'julia',
     name: 'ジュリア集合',
     image: '/images/julia.png',
