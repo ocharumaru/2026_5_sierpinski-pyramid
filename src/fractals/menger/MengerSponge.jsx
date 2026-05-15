@@ -143,7 +143,7 @@ export default function MengerSponge() {
       }
     >
       {({ currentDepth }) => (
-        <FractalScene cameraPosition={[5, 5, 5]}>
+        <FractalScene cameraPosition={[5, 5, 5]} showGrid={true}>
           <MengerMesh depth={currentDepth} wireframe={wireframe} color={meshColor} />
         </FractalScene>
       )}

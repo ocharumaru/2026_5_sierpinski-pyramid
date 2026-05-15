@@ -125,7 +125,7 @@ export default function BarnsleyFern() {
       {({ currentDepth }) => (
         <>
           <FernEditor params={params} onChange={setParams} />
-          <FractalScene>
+          <FractalScene cameraPosition={[0, -2.5, 3]} showGrid={false}>
             <BarnsleyFernPoints
               depth={currentDepth}
               transforms={transforms}

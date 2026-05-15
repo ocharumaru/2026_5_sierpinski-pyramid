@@ -186,7 +186,7 @@ export default function HilbertCurve() {
       }
     >
       {({ currentDepth, stepInterval }) => (
-        <FractalScene cameraPosition={[5, 5, 5]}>
+        <FractalScene cameraPosition={[5, 5, 5]} showGrid={true}>
           {tracking
             ? <HilbertLineTracking depth={currentDepth} stepInterval={stepInterval} lineColor={lineColor} headColor={headColor} lineWidth={lineWidth} />
             : <HilbertLine depth={currentDepth} color={lineColor} lineWidth={lineWidth} />}

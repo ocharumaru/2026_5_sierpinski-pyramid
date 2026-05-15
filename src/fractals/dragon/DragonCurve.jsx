@@ -88,7 +88,7 @@ export default function DragonCurve() {
   return (
     <ControlPanel maxDepth={18} defaultDepth={14} defaultInterval={350}>
       {({ currentDepth }) => (
-        <FractalScene cameraPosition={[0, 0, 4]}>
+        <FractalScene cameraPosition={[0, -2.5, 1]} showGrid={false}>
           <DragonLine depth={currentDepth} color={lineColor} lineWidth={lineWidth} />
         </FractalScene>
       )}

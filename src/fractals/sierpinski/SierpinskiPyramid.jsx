@@ -142,7 +142,7 @@ export default function SierpinskiPyramid() {
       }
     >
       {({ currentDepth }) => (
-        <FractalScene>
+        <FractalScene showGrid={true}>
           <SierpinskiMesh depth={currentDepth} wireframe={wireframe} color={meshColor} />
         </FractalScene>
       )}

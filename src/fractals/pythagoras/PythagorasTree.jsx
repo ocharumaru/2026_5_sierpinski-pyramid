@@ -214,7 +214,7 @@ export default function PythagorasTree() {
             setBranchAngleDeg={setBranchAngleDeg}
             defaultAngleDeg={DEFAULT_BRANCH_ANGLE_DEG}
           />
-          <FractalScene cameraPosition={[0, -0.55, 5.2]}>
+          <FractalScene cameraPosition={[0, -2.5, 3]} showGrid={false}>
             <PythagorasTreeMesh
               depth={currentDepth}
               branchAngleDeg={branchAngleDeg}
