@@ -73,7 +73,10 @@ const GRID_LEVELS_2D = [
   { maxDist:  3.0, extent: 1.5,  divisions: 25 },
   { maxDist:  6.0, extent: 2.7, divisions: 20 },
   { maxDist: 12.0, extent: 5.0,  divisions: 15 },
-  { maxDist: Infinity, extent: 10.0, divisions: 15 },
+  { maxDist: 25.0, extent: 12.0, divisions: 18 },
+  { maxDist: 60.0, extent: 30.0, divisions: 20 },
+  { maxDist: 150.0, extent: 80.0, divisions: 20 },
+  { maxDist: Infinity, extent: 200.0, divisions: 20 },
 ];
 
 function getGridLevel(dist, levels) {
@@ -146,6 +149,8 @@ function SceneGrid({ color, showGrid }) {
  *                               フラクタルの重心に追従させる用途にも使える。
  *                               注: target を動かしてもカメラ位置は不変
  *                               (target 中心の球面角度だけが保たれる)。
+ *   maxDistance    : number     Optional OrbitControls zoom-out limit.
+ *   minDistance    : number     Optional OrbitControls zoom-in limit.
  *   showGrid       : boolean    グリッド表示フラグ (デフォルト true)
  *                               2Dフラクタルには false を渡す
  *
@@ -170,6 +175,8 @@ export default function FractalScene({
   children,
   cameraPosition = [3, 3, 3],
   cameraTarget = [0, 0, 0],
+  maxDistance,
+  minDistance,
   showGrid = true,
 }) {
   const { color } = useTheme();
@@ -182,7 +189,13 @@ export default function FractalScene({
         <directionalLight position={[5, 5, 5]} intensity={1} />
         <SceneGrid color={color} showGrid={showGrid} />
         {children}
-        <OrbitControls enableDamping target={cameraTarget} />
+        <OrbitControls
+          makeDefault
+          enableDamping
+          target={cameraTarget}
+          maxDistance={maxDistance}
+          minDistance={minDistance}
+        />
       </Canvas>
     </div>
   );

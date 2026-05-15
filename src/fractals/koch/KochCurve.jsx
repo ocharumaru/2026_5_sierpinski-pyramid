@@ -88,7 +88,7 @@ export default function KochCurve() {
   return (
     <ControlPanel maxDepth={7} defaultDepth={5} defaultInterval={400}>
       {({ currentDepth }) => (
-        <FractalScene cameraPosition={[0, -2.5, 3]} showGrid={false}>
+        <FractalScene cameraPosition={[0, -2.5, 3]} showGrid={false} maxDistance={8}>
           <KochLine depth={currentDepth} color={meshColor} />
         </FractalScene>
       )}

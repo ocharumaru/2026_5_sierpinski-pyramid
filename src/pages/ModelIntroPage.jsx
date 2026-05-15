@@ -39,7 +39,8 @@ export default function ModelIntroPage() {
   const { pageStyles, color, shape } = useTheme()
   const navigate = useNavigate()
   const [level, setLevel] = useState('beginner')
-  const [openItems, setOpenItems] = useState({})
+  // 「概要」だけは最初から開いた状態にしておく(タブ切替時も同様)。
+  const [openItems, setOpenItems] = useState({ overview: true })
 
   const model = useMemo(() => getFractalCatalogByPath(modelId), [modelId])
 
@@ -60,7 +61,7 @@ export default function ModelIntroPage() {
 
   function handleTabSwitch(nextLevel) {
     setLevel(nextLevel)
-    setOpenItems({})
+    setOpenItems({ overview: true })
   }
 
   function toggleItem(key) {

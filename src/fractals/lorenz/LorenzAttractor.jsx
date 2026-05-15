@@ -117,7 +117,7 @@ export default function LorenzAttractor() {
             defaultParams={DEFAULT_LORENZ}
             presets={LORENZ_PRESETS}
           />
-          <FractalScene cameraPosition={[2.2, 1.6, 2.6]} showGrid={true}>
+          <FractalScene cameraPosition={[2.2, 1.6, 2.6]} showGrid={true} maxDistance={10}>
             <LorenzCurve
               visibleCount={Math.max(2, currentDepth * POINTS_PER_STEP)}
               params={params}

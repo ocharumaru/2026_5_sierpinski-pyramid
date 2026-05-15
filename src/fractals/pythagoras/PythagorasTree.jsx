@@ -206,6 +206,7 @@ function PythagorasContent({
         cameraPosition={[0, 1.5, 5]}
         cameraTarget={cameraTarget}
         showGrid={false}
+        maxDistance={12}
       >
         <PythagorasTreeMesh
           tree={tree}
