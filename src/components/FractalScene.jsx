@@ -61,11 +61,11 @@ function createAxisGeometry(extent, axis) {
 // 遠い順に並べておき、最初にマッチしたものを使う。
 
 const GRID_LEVELS_3D = [
-  { maxDist:  1.5, extent: 0.8,  divisions: 10 },
-  { maxDist:  3.0, extent: 1.5,  divisions: 8 },
-  { maxDist:  6.0, extent: 2.7, divisions: 6 },
-  { maxDist: 12.0, extent: 5.0,  divisions: 5 },
-  { maxDist: Infinity, extent: 30.0, divisions: 4 },
+  { maxDist:  1.5, extent: 10,  divisions: 18 },
+  { maxDist:  3.0, extent: 15,  divisions: 18 },
+  { maxDist:  6.0, extent: 20, divisions: 15},
+  { maxDist: 12.0, extent: 25,  divisions: 18 },
+  { maxDist: Infinity, extent: 30, divisions: 20 },
 ];
 
 const GRID_LEVELS_2D = [
@@ -73,7 +73,7 @@ const GRID_LEVELS_2D = [
   { maxDist:  3.0, extent: 1.5,  divisions: 25 },
   { maxDist:  6.0, extent: 2.7, divisions: 20 },
   { maxDist: 12.0, extent: 5.0,  divisions: 15 },
-  { maxDist: Infinity, extent: 30.0, divisions: 15 },
+  { maxDist: Infinity, extent: 10.0, divisions: 15 },
 ];
 
 function getGridLevel(dist, levels) {
