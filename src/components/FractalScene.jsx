@@ -141,6 +141,11 @@ function SceneGrid({ color, showGrid }) {
  * Props:
  *   children       : ReactNode  フラクタル本体 (Mesh 等)
  *   cameraPosition : [x,y,z]    カメラ初期位置 (デフォルト [3,3,3])
+ *   cameraTarget   : [x,y,z]    OrbitControls の回転中心 (デフォルト [0,0,0])
+ *                               配列の参照が変わるたびに反映されるので、
+ *                               フラクタルの重心に追従させる用途にも使える。
+ *                               注: target を動かしてもカメラ位置は不変
+ *                               (target 中心の球面角度だけが保たれる)。
  *   showGrid       : boolean    グリッド表示フラグ (デフォルト true)
  *                               2Dフラクタルには false を渡す
  *
@@ -154,10 +159,17 @@ function SceneGrid({ color, showGrid }) {
  *   <FractalScene showGrid={false}>
  *     <SierpinskiTriangle />
  *   </FractalScene>
+ *
+ *   // 原点中心じゃないフラクタル → cameraTarget で回転中心を移動
+ *   //   (動的に変えたい場合は useMemo で配列を返す)
+ *   <FractalScene cameraTarget={[0, 2, 0]}>
+ *     <PythagorasTree />
+ *   </FractalScene>
  */
 export default function FractalScene({
   children,
   cameraPosition = [3, 3, 3],
+  cameraTarget = [0, 0, 0],
   showGrid = true,
 }) {
   const { color } = useTheme();
@@ -170,7 +182,7 @@ export default function FractalScene({
         <directionalLight position={[5, 5, 5]} intensity={1} />
         <SceneGrid color={color} showGrid={showGrid} />
         {children}
-        <OrbitControls enableDamping />
+        <OrbitControls enableDamping target={cameraTarget} />
       </Canvas>
     </div>
   );

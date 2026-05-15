@@ -10,7 +10,9 @@ import PythagorasControls from "./PythagorasControls";
 const MODEL = getFractalCatalogByPath("pythagoras");
 const DEFAULT_BRANCH_ANGLE_DEG = 45;
 const VIEW_SIZE = 3.2;
-const MIN_NORMALIZE_SPAN = 2.4;
+const REFERENCE_SPAN = 2.4;
+const ROOT_SCALE = VIEW_SIZE / REFERENCE_SPAN;
+const ROOT_ANCHOR_Y = 0.5;
 const SLAB_THICKNESS = 0.045;
 const LEVEL_Z_OFFSET = 0.004;
 
@@ -67,45 +69,31 @@ function addSquare(out, bounds, ax, ay, bx, by, depth, level, branchAngle) {
   addSquare(out, bounds, apexX, apexY, cx, cy, depth - 1, level + 1, branchAngle);
 }
 
-function normalizeSquares(squares, bounds) {
-  const centerX = (bounds.minX + bounds.maxX) / 2;
-  const centerY = (bounds.minY + bounds.maxY) / 2;
-  const span = Math.max(
-    bounds.maxX - bounds.minX,
-    bounds.maxY - bounds.minY,
-    MIN_NORMALIZE_SPAN
-  );
-  const scale = VIEW_SIZE / span;
-
+function normalizeSquares(squares) {
   return squares.map((square) => ({
     ...square,
-    x: (square.x - centerX) * scale,
-    y: (square.y - centerY) * scale,
-    side: square.side * scale,
+    x: square.x * ROOT_SCALE,
+    y: (square.y - ROOT_ANCHOR_Y) * ROOT_SCALE,
+    side: square.side * ROOT_SCALE,
   }));
 }
 
-/**
- * depth に応じた正方形の配置情報を生成する。
- * 各正方形は薄い箱として描画し、xy 平面上のピタゴラスの木に少し厚みを与える。
- *
- * @param {number} depth - フラクタルの再帰の深さ
- * @returns {{ squares: { x: number, y: number, side: number, angle: number, level: number }[], maxLevel: number }}
- */
 function generateTree(depth, branchAngle) {
   const squares = [];
   const bounds = {
-    minX: Infinity,
-    maxX: -Infinity,
-    minY: Infinity,
-    maxY: -Infinity,
+    minX: Infinity, maxX: -Infinity,
+    minY: Infinity, maxY: -Infinity,
   };
-
   addSquare(squares, bounds, -0.5, 0, 0.5, 0, depth, 0, branchAngle);
 
+  const rawCenterX = (bounds.minX + bounds.maxX) / 2;
+  const rawCenterY = (bounds.minY + bounds.maxY) / 2;
+
   return {
-    squares: normalizeSquares(squares, bounds),
+    squares: normalizeSquares(squares),
     maxLevel: depth,
+    centerX: rawCenterX * ROOT_SCALE,
+    centerY: (rawCenterY - ROOT_ANCHOR_Y) * ROOT_SCALE,
   };
 }
 
@@ -153,9 +141,7 @@ function SquareInstances({ squares, color, wireframe }) {
   );
 }
 
-function PythagorasTreeMesh({ depth, branchAngleDeg, color, accentColor, wireframe }) {
-  const branchAngle = THREE.MathUtils.degToRad(branchAngleDeg);
-  const tree = useMemo(() => generateTree(depth, branchAngle), [depth, branchAngle]);
+function PythagorasTreeMesh({ tree, color, accentColor, wireframe }) {
   const groups = useMemo(() => {
     const baseColor = new THREE.Color(color);
     const topColor = new THREE.Color(accentColor);
@@ -191,6 +177,47 @@ function PythagorasTreeMesh({ depth, branchAngleDeg, color, accentColor, wirefra
   );
 }
 
+function PythagorasContent({
+  currentDepth,
+  branchAngleDeg,
+  setBranchAngleDeg,
+  meshColor,
+  accentColor,
+  wireframe,
+}) {
+  const branchAngle = THREE.MathUtils.degToRad(branchAngleDeg);
+  const tree = useMemo(
+    () => generateTree(currentDepth, branchAngle),
+    [currentDepth, branchAngle]
+  );
+  const cameraTarget = useMemo(
+    () => [tree.centerX, tree.centerY, 0],
+    [tree.centerX, tree.centerY]
+  );
+
+  return (
+    <>
+      <PythagorasControls
+        branchAngleDeg={branchAngleDeg}
+        setBranchAngleDeg={setBranchAngleDeg}
+        defaultAngleDeg={DEFAULT_BRANCH_ANGLE_DEG}
+      />
+      <FractalScene
+        cameraPosition={[0, 1.5, 5]}
+        cameraTarget={cameraTarget}
+        showGrid={false}
+      >
+        <PythagorasTreeMesh
+          tree={tree}
+          color={meshColor}
+          accentColor={accentColor}
+          wireframe={wireframe}
+        />
+      </FractalScene>
+    </>
+  );
+}
+
 export default function PythagorasTree() {
   const { theme } = useTheme();
   const [wireframe, setWireframe] = useState(false);
@@ -208,22 +235,14 @@ export default function PythagorasTree() {
       }
     >
       {({ currentDepth }) => (
-        <>
-          <PythagorasControls
-            branchAngleDeg={branchAngleDeg}
-            setBranchAngleDeg={setBranchAngleDeg}
-            defaultAngleDeg={DEFAULT_BRANCH_ANGLE_DEG}
-          />
-          <FractalScene cameraPosition={[0, -2.5, 3]} showGrid={false}>
-            <PythagorasTreeMesh
-              depth={currentDepth}
-              branchAngleDeg={branchAngleDeg}
-              color={meshColor}
-              accentColor={accentColor}
-              wireframe={wireframe}
-            />
-          </FractalScene>
-        </>
+        <PythagorasContent
+          currentDepth={currentDepth}
+          branchAngleDeg={branchAngleDeg}
+          setBranchAngleDeg={setBranchAngleDeg}
+          meshColor={meshColor}
+          accentColor={accentColor}
+          wireframe={wireframe}
+        />
       )}
     </ControlPanel>
   );
