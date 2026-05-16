@@ -171,10 +171,17 @@ function SceneGrid({ color, showGrid }) {
  *     <PythagorasTree />
  *   </FractalScene>
  */
+// デフォルト値は呼び出しごとに新しい配列を作らないようモジュール定数で固定する。
+// 配列参照が毎レンダー変わると、drei OrbitControls が <primitive> 経由で
+// controls.target を毎レンダーリセットしてしまい、useFrame 内で lerp している
+// 追従カメラ(Dragon / Lorenz)が「警告なしに飛ぶ」ように見える原因になる。
+const DEFAULT_CAMERA_POSITION = [3, 3, 3];
+const DEFAULT_CAMERA_TARGET = [0, 0, 0];
+
 export default function FractalScene({
   children,
-  cameraPosition = [3, 3, 3],
-  cameraTarget = [0, 0, 0],
+  cameraPosition = DEFAULT_CAMERA_POSITION,
+  cameraTarget = DEFAULT_CAMERA_TARGET,
   maxDistance,
   minDistance,
   showGrid = true,
